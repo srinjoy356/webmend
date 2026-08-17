@@ -21,3 +21,11 @@ summary ("done," "created successfully," "confirmed") is never
 sufficient on its own. If a command wasn't actually run, say so
 explicitly rather than describing an expected outcome. If a file wasn't
 actually created, say so rather than describing what it would contain.
+
+---
+SCRAPER_STUDIO_COLLECTOR_ID=c_mswxou59gsluhekiy
+RUN COMMAND: cmd /c npx -p @brightdata/cli bdata scraper run c_mswxou59gsluhekiy --urls "https://www.croma.com/campaign/redmi-note-/c/7574" --pretty
+
+---
+FIXTURE_COLLECTOR_ID=c_mswy3fc02128qburqf
+FIXTURE RUN COMMAND: cmd /c npx -p @brightdata/cli bdata scraper run c_mswy3fc02128qburqf --urls "https://fixture-store.vercel.app" --pretty
