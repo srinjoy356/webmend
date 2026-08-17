@@ -4,8 +4,44 @@
     <title>Fixture Store - Webmend Target</title>
 </head>
 <body>
-    <h1>Test Product</h1>
-    <p>Price: $19.99</p>
-    <p>Availability: In Stock</p>
+  <div class="product-wrapper">
+    <h1 id="product-title">Test Product</h1>
+    
+    <!-- Break 4: Restructured image gallery -->
+    <div class="gallery-container">
+      <img src="https://via.placeholder.com/150" alt="Test Product Image 1" />
+      <img src="https://via.placeholder.com/150" alt="Test Product Image 2" />
+    </div>
+
+    <!-- Break 1 & 2: Renamed price class and moved to different parent container -->
+    <div class="checkout-box">
+      <span class="new-price-tag">$19.99</span>
+    </div>
+
+    <!-- Break 3: Changed stock status text format to a data attribute -->
+    <div class="inventory" data-stock="available"></div>
+
+    <p class="desc">A fantastic test product.</p>
+    <div class="timestamp">2026-08-17T08:00:00.000Z</div>
+  </div>
+  
+  <script>
+    // Live Break Simulation Logic
+    // If the scraper runner calls this URL with ?simulate_break=true,
+    // we intentionally mangle the DOM so the expected schema fails.
+    if (window.location.search.includes('simulate_break=true')) {
+      const checkoutBox = document.querySelector('.checkout-box');
+      if (checkoutBox) checkoutBox.className = 'broken-checkout-box-hidden';
+      
+      const priceTag = document.querySelector('.new-price-tag');
+      if (priceTag) priceTag.className = 'broken-price-tag-hidden';
+      
+      const inventory = document.querySelector('.inventory');
+      if (inventory) inventory.removeAttribute('data-stock');
+      
+      const title = document.getElementById('product-title');
+      if (title) title.innerText = ''; // Return null for title
+    }
+  </script>
 </body>
 </html>
