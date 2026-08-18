@@ -1,8 +1,7 @@
 const express = require('express');
-const { execFile } = require('child_process');
+const { execCliCommand } = require('../utils/spawnHelper');
 const { Client } = require('pg');
 const router = express.Router();
-const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 
 async function getDbClient() {
   const client = new Client({
@@ -145,40 +144,38 @@ router.post('/collectors/create', async (req, res) => {
     return res.status(400).json({ error: 'url, description, and name are required' });
   }
 
-  // We use execFile with an args array to avoid command injection
+  // We use execCliCommand with an args array to avoid command injection
   const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', 'create', url, description, '--name', name, '--json'];
-  console.log(`Executing create command via execFile: npx ${args.join(' ')}`);
+  console.log(`Executing create command via cross-spawn: npx ${args.join(' ')}`);
   
-  // Set 15min timeout
-  execFile(npxCmd, args, { maxBuffer: 1024 * 1024 * 50, timeout: 15 * 60 * 1000 }, async (error, stdout, stderr) => {
-    if (error) {
-      console.error("Create failed", error);
-      return;
-    }
-    const client = await getDbClient();
-    try {
-      const jsonStart = stdout.indexOf('{');
-      const jsonEnd = stdout.lastIndexOf('}') + 1;
-      if (jsonStart === -1) return;
-      const result = JSON.parse(stdout.substring(jsonStart, jsonEnd));
-      
-      // We assume the result contains collector_id
-      if (result.collector_id) {
-        // Since we don't strictly know the expected_schema from the create output immediately
-        // (unless it's in the json envelope), we'll default to an empty array.
-        const schema = result.schema || [];
-        await client.query(
-          `INSERT INTO collectors (id, target_url, expected_schema, name) VALUES ($1, $2, $3, $4)`,
-          [result.collector_id, url, JSON.stringify(schema), name]
-        );
-        console.log(`Onboarded new collector ${result.collector_id} into DB.`);
+  execCliCommand('npx', args)
+    .then(async ({ stdout }) => {
+      const client = await getDbClient();
+      try {
+        const jsonStart = stdout.indexOf('{');
+        const jsonEnd = stdout.lastIndexOf('}') + 1;
+        if (jsonStart === -1) throw new Error("No JSON found");
+        const jsonStr = stdout.substring(jsonStart, jsonEnd);
+        const data = JSON.parse(jsonStr);
+        
+        const collectorId = data.collector_id;
+        if (collectorId) {
+          const schema = data.schema || [];
+          await client.query(
+            `INSERT INTO collectors (id, target_url, expected_schema, name) VALUES ($1, $2, $3, $4)`,
+            [collectorId, url, JSON.stringify(schema), name]
+          );
+          console.log(`Onboarded new collector ${collectorId} into DB.`);
+        }
+      } catch(err) {
+        console.error("Failed to parse create output", err);
+      } finally {
+        await client.end();
       }
-    } catch(err) {
-      console.error("Failed to parse create output", err);
-    } finally {
-      await client.end();
-    }
-  });
+    })
+    .catch((error) => {
+      console.error("Create failed", error);
+    });
 
   // Return immediately to not block the frontend for 10 minutes
   res.json({ message: 'Scraper creation job started. It will appear in the dashboard in ~5-10 minutes.' });
@@ -191,75 +188,45 @@ router.post('/collectors/:id/heal/approve', async (req, res) => {
   
   const client = await getDbClient();
   try {
-    if (action === 'reject') {
-      const cmd = `cmd /c npx -p @brightdata/cli bdata scraper approve --reject ${collectorId}`;
-      console.log(`Executing: ${cmd}`);
-      
-      exec(cmd, async (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Exec error: ${error.message}`);
-          await client.query(
-            `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
-            [collectorId, 'heal_error', JSON.stringify({ error: error.message, stderr })]
-          );
-          client.end();
-          return res.status(500).json({ error: error.message, stderr });
-        }
-        
-        console.log(`Command stdout: ${stdout}`);
-        
-        await client.query(`UPDATE runs SET status = 'success' WHERE collector_id = $1 AND status = 'broken'`, [collectorId]);
-        await client.query(`DELETE FROM events WHERE event_type = 'heal_pending' AND collector_id = $1`, [collectorId]);
-        
-        await client.query(
-          `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
-          [collectorId, 'heal_rejected', JSON.stringify({ output: stdout, message: "Heal rejected by user" })]
-        );
-        
-        client.end();
-        return res.json({ status: 'rejected', stdout });
-      });
-      return;
-    }
-
-    // We execute the bright data CLI for 'approve' or 'reject' using execFile
+    // We execute the bright data CLI for 'approve' or 'reject' using execCliCommand
     const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', action, collectorId];
     console.log(`Executing: npx ${args.join(' ')}`);
     
-    execFile(npxCmd, args, async (error, stdout, stderr) => {
-      if (error) {
+    execCliCommand('npx', args)
+      .then(async ({ stdout }) => {
+        console.log(`Command stdout: ${stdout}`);
+        
+        // Clear the broken run status now that we've approved the fix
+        await client.query(`UPDATE runs SET status = 'success' WHERE collector_id = $1 AND status = 'broken'`, [collectorId]);
+        await client.query(`DELETE FROM events WHERE event_type = 'heal_pending' AND collector_id = $1`, [collectorId]);
+        
+        // Log event
+        await client.query(
+          `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
+          [collectorId, action === 'approve' ? 'heal_approved' : 'heal_rejected', JSON.stringify({ output: stdout })]
+        );
+        
+        // Automatically trigger a fresh run to verify and pull the recovered data
+        if (action === 'approve') {
+          const configRes = await client.query('SELECT target_url FROM collectors WHERE id = $1', [collectorId]);
+          if (configRes.rows.length > 0) {
+            const { runAndStore } = require('../services/runner');
+            console.log(`Automatically running a fresh scrape for ${collectorId} post-approval...`);
+            runAndStore(collectorId, configRes.rows[0].target_url).catch(e => console.error("Post-heal run failed", e));
+          }
+        }
+        
+        client.end();
+      })
+      .catch(async (error) => {
         console.error(`Exec error: ${error.message}`);
         await client.query(
           `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
-          [collectorId, 'heal_error', JSON.stringify({ error: error.message, stderr })]
+          [collectorId, 'heal_error', JSON.stringify({ error: error.message })]
         );
         client.end();
-        return res.status(500).json({ error: error.message, stderr });
-      }
-      
-      console.log(`Command stdout: ${stdout}`);
-      
-      // Clear the broken run status now that we've approved the fix
-      await client.query(`UPDATE runs SET status = 'success' WHERE collector_id = $1 AND status = 'broken'`, [collectorId]);
-      await client.query(`DELETE FROM events WHERE event_type = 'heal_pending' AND collector_id = $1`, [collectorId]);
-      
-      // Log event
-      await client.query(
-        `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
-        [collectorId, 'heal_approved', JSON.stringify({ output: stdout })]
-      );
-      
-      // Automatically trigger a fresh run to verify and pull the recovered data
-      const configRes = await client.query('SELECT target_url FROM collectors WHERE id = $1', [collectorId]);
-      if (configRes.rows.length > 0) {
-        const { runAndStore } = require('../services/runner');
-        console.log(`Automatically running a fresh scrape for ${collectorId} post-approval...`);
-        runAndStore(collectorId, configRes.rows[0].target_url).catch(e => console.error("Post-heal run failed", e));
-      }
-      
-      client.end();
-      res.json({ success: true, stdout });
-    });
+        return res.status(500).json({ error: error.message });
+      });
   } catch (error) {
     await client.end();
     res.status(500).json({ error: error.message });

@@ -1,5 +1,4 @@
-const { execFile } = require('child_process');
-const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+const { execCliCommand } = require('../utils/spawnHelper');
 const { Client } = require('pg');
 // DB driven now
 const path = require('path');
@@ -23,26 +22,27 @@ function runScraperCli(collectorId, url) {
     const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', 'run', collectorId, '--urls', url, '--json'];
     
     // Increased maxBuffer for large JSON payloads
-    execFile(npxCmd, args, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`CLI Error:`, stderr);
-        return reject(error);
-      }
-      try {
-        // Bright Data CLI prints logs to stderr (or we just parse JSON from stdout)
-        // Find the JSON array boundary
-        const jsonStart = stdout.indexOf('[');
-        const jsonEnd = stdout.lastIndexOf(']') + 1;
-        if (jsonStart === -1) throw new Error("No JSON found in output");
-        
-        const jsonStr = stdout.substring(jsonStart, jsonEnd);
-        const data = JSON.parse(jsonStr);
-        resolve(data);
-      } catch (e) {
-        console.error('Failed to parse output:', stdout);
-        reject(e);
-      }
-    });
+    execCliCommand('npx', args)
+      .then(({ stdout }) => {
+        try {
+          // Bright Data CLI prints logs to stderr (or we just parse JSON from stdout)
+          // Find the JSON array boundary
+          const jsonStart = stdout.indexOf('[');
+          const jsonEnd = stdout.lastIndexOf(']') + 1;
+          if (jsonStart === -1) throw new Error("No JSON found in output");
+          
+          const jsonStr = stdout.substring(jsonStart, jsonEnd);
+          const data = JSON.parse(jsonStr);
+          resolve(data);
+        } catch (e) {
+          console.error('Failed to parse output:', stdout);
+          reject(e);
+        }
+      })
+      .catch((error) => {
+        console.error(`CLI Error:`, error.stderr || error.message);
+        reject(error);
+      });
   });
 }
 
