@@ -217,6 +217,7 @@ router.post('/collectors/:id/heal/approve', async (req, res) => {
         }
         
         client.end();
+        res.json({ success: true, stdout });
       })
       .catch(async (error) => {
         console.error(`Exec error: ${error.message}`);

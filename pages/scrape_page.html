@@ -1,0 +1,320 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Collector Detail - BentoOS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed": "#bdedd7",
+                        "surface-container": "#f0eded",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#eae7e7",
+                        "primary": "#00261b",
+                        "secondary": "#b72028",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#bcf543",
+                        "on-primary-fixed-variant": "#224f3f",
+                        "inverse-surface": "#313030",
+                        "background": "#fcf9f8",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#293b00",
+                        "on-primary-fixed": "#002116",
+                        "on-secondary-fixed": "#410004",
+                        "outline-variant": "#c0c8c3",
+                        "surface": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#ffdad7",
+                        "on-secondary-container": "#5c0009",
+                        "tertiary-fixed-dim": "#a1d825",
+                        "on-tertiary-fixed": "#141f00",
+                        "tertiary": "#172400",
+                        "inverse-on-surface": "#f3f0ef",
+                        "outline": "#717974",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary-fixed-variant": "#374e00",
+                        "inverse-primary": "#a1d1bc",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0d3d2e",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb3ae",
+                        "on-surface": "#1c1b1b",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#a1d1bc",
+                        "on-tertiary-container": "#7dad00",
+                        "surface-dim": "#dcd9d9",
+                        "on-error": "#ffffff",
+                        "on-background": "#1c1b1b",
+                        "on-secondary-fixed-variant": "#930014",
+                        "on-primary-container": "#7aa894",
+                        "surface-container-low": "#f6f3f2",
+                        "on-surface-variant": "#414944",
+                        "surface-tint": "#3a6756",
+                        "secondary-container": "#fe5553",
+                        "surface-container-highest": "#e5e2e1"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "stack-lg": "32px",
+                        "card-padding": "24px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "margin-page": "40px",
+                        "stack-md": "16px",
+                        "unit": "4px"
+                    },
+                    fontFamily: {
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "display-lg": ["Archivo Narrow"],
+                        "code": ["JetBrains Mono"],
+                        "headline-md": ["Archivo Narrow"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Archivo Narrow"]
+                    },
+                    fontSize: {
+                        "headline-lg-mobile": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "display-lg": ["64px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "code": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "headline-md": ["24px", { lineHeight: "1.3", fontWeight: "600" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "body-md": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "headline-lg": ["40px", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pulse-lime {
+            animation: pulse-lime 2s infinite;
+        }
+        @keyframes pulse-lime {
+            0% { box-shadow: 0 0 0 0 rgba(188, 245, 67, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(188, 245, 67, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(188, 245, 67, 0); }
+        }
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(183, 32, 40, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(183, 32, 40, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(183, 32, 40, 0); }
+        }
+        /* Custom scrollbar for raw data block */
+        .raw-data-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .raw-data-scroll::-webkit-scrollbar-track { background: #00261b; border-left: 1px solid #3a6756; }
+        .raw-data-scroll::-webkit-scrollbar-thumb { background: #3a6756; border-radius: 4px; }
+        .raw-data-scroll::-webkit-scrollbar-thumb:hover { background: #bdedd7; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col selection:bg-tertiary-fixed selection:text-tertiary">
+<!-- TopNavBar -->
+
+<!-- Main Content Canvas -->
+<main class="flex-grow px-margin-page py-stack-lg flex flex-col gap-stack-lg max-w-[1440px] mx-auto w-full">
+<!-- HEADER SECTION -->
+<header class="flex flex-col gap-stack-md border-b-2 border-on-surface pb-stack-lg">
+<div class="flex justify-between items-start w-full">
+<div class="flex flex-col gap-stack-sm">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 w-fit mb-2" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                        ← BACK TO CONSOLE
+                    </a>
+<h1 class="font-display-lg text-display-lg text-primary m-0 tracking-tight flex items-center gap-3">
+                        Fixture Store (PDP)
+                        <span class="inline-flex items-center justify-center bg-primary text-tertiary-fixed border border-on-surface px-3 py-1 rounded-sm font-code text-code tracking-normal ml-2 align-middle shadow-[2px_2px_0px_0px_#1c1b1b]">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed mr-2 pulse-lime border border-on-surface"></span>
+                            SUCCESS
+                        </span>
+</h1>
+<div class="flex items-center gap-2 font-code text-code text-primary-container mt-1">
+<span class="material-symbols-outlined text-[18px]">link</span>
+<a class="hover:underline hover:text-primary decoration-2 underline-offset-4" href="#">https://fixture-store.vercel.app</a>
+<span class="mx-2 text-outline-variant">|</span>
+<span class="text-on-surface-variant">ID: cl_8f92a1b</span>
+<span class="mx-2 text-outline-variant">|</span>
+<span class="text-on-surface-variant">FREQ: 15m</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-stack-sm">
+<button class="bg-secondary text-on-secondary px-6 py-3 rounded-md font-label-caps text-label-caps border-2 border-on-surface shadow-[4px_4px_0px_0px_#1c1b1b] hover:translate-y-[1px] hover:translate-x-[1px] hover:shadow-[3px_3px_0px_0px_#1c1b1b] active:translate-y-[4px] active:translate-x-[4px] active:shadow-[0px_0px_0px_0px_#1c1b1b] transition-all flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined">warning</span>
+                        ⚠ SIMULATE LIVE BREAK
+                    </button>
+<div class="font-code text-code text-on-surface-variant mt-2 text-right">
+                        Last Run: <span class="text-primary font-bold">2m ago</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ASYMMETRIC GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mt-4">
+<!-- Left Column: Action Timeline (Wide) -->
+<div class="lg:col-span-8 flex flex-col gap-stack-md">
+<div class="flex items-center justify-between border-b-2 border-on-surface pb-2 mb-2">
+<h2 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">history</span>
+                        Action Timeline
+                    </h2>
+<span class="font-label-caps text-label-caps text-outline bg-surface-container px-2 py-1 rounded border border-outline-variant">LAST 24 HOURS</span>
+</div>
+<div class="relative pl-6 flex flex-col gap-stack-sm border-l-2 border-primary-container ml-4 py-4">
+<!-- Timeline Item: RUN (Success) -->
+<div class="relative flex flex-col gap-1 bg-surface-container-low border border-on-surface p-card-padding rounded-lg shadow-[2px_2px_0px_0px_#1c1b1b] ml-4 mb-4">
+<div class="absolute -left-[37px] top-6 w-4 h-4 rounded-full border-2 border-on-surface bg-tertiary-fixed z-10"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps bg-primary text-on-primary px-2 py-1 rounded-sm border border-on-surface">RUN</span>
+<span class="font-code text-[12px] text-on-surface-variant">10:45:02 UTC</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-bold">Scrape cycle completed successfully.</p>
+<div class="font-code text-code bg-surface-container p-2 rounded border border-outline-variant text-primary-container mt-2">
+                            Extracted 48 nodes. Price variations detected on 2 items.
+                        </div>
+</div>
+<!-- Timeline Item: HEAL ERROR (Recovery) -->
+<div class="relative flex flex-col gap-1 bg-tertiary-fixed/10 border border-on-surface p-card-padding rounded-lg shadow-[2px_2px_0px_0px_#1c1b1b] ml-4 mb-4">
+<div class="absolute -left-[37px] top-6 w-4 h-4 rounded-full border-2 border-on-surface bg-primary z-10 pulse-lime"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps bg-tertiary-fixed text-primary px-2 py-1 rounded-sm border border-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_fix_high</span> HEAL ERROR</span>
+<span class="font-code text-[12px] text-on-surface-variant">10:30:15 UTC</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-bold">Auto-recovery engaged for CSS selector mutation.</p>
+<div class="font-code text-code bg-surface p-2 rounded border border-on-surface text-primary-container mt-2">
+<span class="text-error line-through mr-2">div.price-tag</span> <span class="text-tertiary-container font-bold">span[data-test="p-val"]</span>
+</div>
+</div>
+<!-- Timeline Item: BREAK (Error) -->
+<div class="relative flex flex-col gap-1 bg-error-container/20 border-2 border-secondary p-card-padding rounded-lg shadow-[2px_2px_0px_0px_#b72028] ml-4">
+<div class="absolute -left-[38px] top-6 w-4 h-4 rounded-full border-2 border-on-surface bg-secondary z-10 pulse-red"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps bg-secondary text-on-secondary px-2 py-1 rounded-sm border border-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">block</span> BREAK</span>
+<span class="font-code text-[12px] text-on-surface-variant">10:30:00 UTC</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-bold text-secondary">Target node missing. Pipeline halted.</p>
+<div class="font-code text-code bg-surface p-2 rounded border border-secondary text-secondary-container mt-2">
+                            DOM Exception: Element not found at path //div[@id='root']/main/section[2]/div[1]
+                        </div>
+</div>
+</div>
+</div>
+<!-- Right Column: Charts (Narrower) -->
+<div class="lg:col-span-4 flex flex-col gap-stack-lg">
+<!-- Price History Chart Card -->
+<div class="bg-surface-container-lowest border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_#1c1b1b] p-card-padding flex flex-col h-full">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-4">
+<h3 class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">show_chart</span>
+                            Price History (Avg)
+                        </h3>
+</div>
+<div class="flex-grow flex items-end relative h-48 border-l border-b border-on-surface pb-1 pl-1">
+<!-- Abstracted Chart Illustration -->
+<svg class="w-full h-full overflow-visible absolute bottom-0 left-0" preserveAspectRatio="none" viewBox="0 0 100 50">
+<path d="M0,40 L20,35 L40,38 L60,10 L80,15 L100,5" fill="none" stroke="#b72028" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<circle cx="60" cy="10" fill="#bcf543" r="3" stroke="#1c1b1b" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle>
+<circle cx="100" cy="5" fill="#bcf543" r="3" stroke="#1c1b1b" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle>
+</svg>
+<div class="absolute top-0 right-0 font-code text-[10px] text-on-surface-variant bg-surface px-1 border border-outline-variant rounded">Peak: $249</div>
+<div class="absolute bottom-[-20px] left-0 font-code text-[10px] text-on-surface-variant w-full flex justify-between">
+<span class="">Mon</span><span class="">Wed</span><span class="">Fri</span>
+</div>
+<div class="absolute top-0 left-[-30px] font-code text-[10px] text-on-surface-variant h-full flex flex-col justify-between items-end pr-1">
+<span class="">$300</span><span class="">$150</span><span class="">$0</span>
+</div>
+</div>
+</div>
+<!-- Availability Trend Chart Card -->
+<div class="bg-surface-container-lowest border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_#1c1b1b] p-card-padding flex flex-col h-full">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-4">
+<h3 class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">inventory</span>
+                            Availability Trend
+                        </h3>
+</div>
+<div class="flex-grow flex flex-col justify-center gap-2 h-32">
+<!-- Step Bar Chart Abstraction -->
+<div class="w-full flex items-end h-full gap-1 border-b border-on-surface pb-1">
+<div class="w-1/6 bg-primary h-full border border-on-surface"></div>
+<div class="w-1/6 bg-primary h-full border border-on-surface"></div>
+<div class="w-1/6 bg-secondary h-1/4 border border-on-surface relative"><div class="absolute -top-5 left-1/2 -translate-x-1/2 font-code text-[8px] text-secondary">OOS</div></div>
+<div class="w-1/6 bg-primary h-full border border-on-surface"></div>
+<div class="w-1/6 bg-primary h-full border border-on-surface"></div>
+<div class="w-1/6 bg-primary h-full border border-on-surface"></div>
+</div>
+<div class="flex justify-between font-code text-[10px] text-on-surface-variant mt-1">
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-primary inline-block"></span> In Stock (83%)</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-secondary inline-block"></span> Out (17%)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: RAW SCRAPED DATA -->
+<div class="w-full bg-primary border-2 border-on-surface rounded-xl shadow-[4px_4px_0px_0px_#1c1b1b] overflow-hidden mt-4">
+<div class="bg-on-surface px-card-padding py-3 flex justify-between items-center border-b-2 border-on-surface">
+<div class="flex items-center gap-4">
+<h2 class="font-label-caps text-label-caps text-tertiary-fixed flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">data_object</span>
+                        RAW SCRAPED DATA
+                    </h2>
+<span class="font-code text-[12px] text-surface-variant bg-surface-variant/20 px-2 py-0.5 rounded">LATEST RUN</span>
+</div>
+<div class="font-code text-[12px] text-primary-fixed-dim border border-primary-fixed-dim px-2 py-0.5 rounded">48 RECORDS</div>
+</div>
+<div class="p-card-padding h-[400px] overflow-y-auto raw-data-scroll font-code text-code text-surface bg-primary">
+<pre class="m-0 whitespace-pre-wrap"><code class="language-json">
+<span class="text-outline-variant">// Payload extracted at 10:45:02 UTC via Pipeline ID #92A</span>
+{
+  <span class="text-tertiary-fixed">"meta"</span>: {
+    <span class="text-tertiary-fixed">"status"</span>: 200,
+    <span class="text-tertiary-fixed">"timestamp"</span>: <span class="text-secondary-fixed-dim">"2024-05-20T10:45:02Z"</span>,
+    <span class="text-tertiary-fixed">"source_url"</span>: <span class="text-secondary-fixed-dim">"https://fixture-store.vercel.app/catalog"</span>
+  },
+  <span class="text-tertiary-fixed">"data"</span>: [
+    {
+      <span class="text-tertiary-fixed">"id"</span>: <span class="text-secondary-fixed-dim">"prod_1092"</span>,
+      <span class="text-tertiary-fixed">"title"</span>: <span class="text-secondary-fixed-dim">"Mid-Century Desk Lamp"</span>,
+      <span class="text-tertiary-fixed">"price"</span>: {
+        <span class="text-tertiary-fixed">"currency"</span>: <span class="text-secondary-fixed-dim">"USD"</span>,
+        <span class="text-tertiary-fixed">"amount"</span>: <span class="text-surface-variant">149.99</span>
+      },
+      <span class="text-tertiary-fixed">"availability"</span>: <span class="text-primary-fixed">true</span>,
+      <span class="text-tertiary-fixed">"sku"</span>: <span class="text-secondary-fixed-dim">"LM-MC-01"</span>
+    },
+    {
+      <span class="text-tertiary-fixed">"id"</span>: <span class="text-secondary-fixed-dim">"prod_1093"</span>,
+      <span class="text-tertiary-fixed">"title"</span>: <span class="text-secondary-fixed-dim">"Brutalist Floor Vase"</span>,
+      <span class="text-tertiary-fixed">"price"</span>: {
+        <span class="text-tertiary-fixed">"currency"</span>: <span class="text-secondary-fixed-dim">"USD"</span>,
+        <span class="text-tertiary-fixed">"amount"</span>: <span class="text-surface-variant">299.00</span>
+      },
+      <span class="text-tertiary-fixed">"availability"</span>: <span class="text-secondary-fixed-dim">false</span>,
+      <span class="text-tertiary-fixed">"sku"</span>: <span class="text-secondary-fixed-dim">"VS-BR-09"</span>
+    }
+  ]
+}
+</code></pre>
+</div>
+</div>
+</main>
+
+
+</body></html>
