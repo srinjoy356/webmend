@@ -11,8 +11,9 @@ export function SimulateBreakButton({ collectorId }: { collectorId: string }) {
 
   async function handleSimulate() {
     setLoading(true);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     try {
-      const res = await fetch(`http://localhost:3001/api/collectors/${collectorId}/simulate-break`, {
+      const res = await fetch(`${API_URL}/api/collectors/${collectorId}/simulate-break`, {
         method: "POST",
       });
       if (res.ok) {

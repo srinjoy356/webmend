@@ -22,6 +22,7 @@ It demonstrates how you can confidently deploy AI scrapers into production by ke
 - Bright Data Account (with API Key)
 - OpenAI API Key (if relying on Bright Data's OpenAI integration)
 
+*Note: This project was developed on Windows. The backend uses `process.platform === 'win32' ? 'npx.cmd' : 'npx'` for spawned processes to ensure cross-platform compatibility, but if you encounter any CLI execution issues on Mac/Linux, ensure `npx` is available in your PATH.*
 ### Installation
 
 1. Clone the repo and navigate to `backend/` and `frontend/` to `npm install`.

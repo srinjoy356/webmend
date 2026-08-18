@@ -1,4 +1,5 @@
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
+const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const { Client } = require('pg');
 // DB driven now
 const path = require('path');
@@ -19,10 +20,10 @@ function runScraperCli(collectorId, url) {
   return new Promise((resolve, reject) => {
     console.log(`Triggering collector ${collectorId} for ${url}...`);
     // We use the CLI because it cleanly handles trigger + poll for us
-    const cmd = `npx -p @brightdata/cli bdata scraper run ${collectorId} --urls "${url}" --json`;
+    const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', 'run', collectorId, '--urls', url, '--json'];
     
     // Increased maxBuffer for large JSON payloads
-    exec(cmd, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
+    execFile(npxCmd, args, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
       if (error) {
         console.error(`CLI Error:`, stderr);
         return reject(error);

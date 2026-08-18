@@ -5,7 +5,8 @@ import { Monitor, Activity, ShieldCheck, Database, ArrowRight, AlertTriangle, Ch
 import { CreateCollectorModal } from "./CreateCollectorModal";
 
 async function getCollectors() {
-  const res = await fetch("http://localhost:3001/api/collectors", { cache: 'no-store' });
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const res = await fetch(`${API_URL}/api/collectors`, { cache: 'no-store' });
   if (!res.ok) throw new Error("Failed to fetch collectors");
   return res.json();
 }

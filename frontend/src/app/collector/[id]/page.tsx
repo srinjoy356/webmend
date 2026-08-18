@@ -9,9 +9,10 @@ import { RunButton } from "./RunButton";
 import { DiffViewer } from "./DiffViewer";
 
 async function getCollectorData(id: string) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   const [collectorsRes, eventsRes] = await Promise.all([
-    fetch("http://localhost:3001/api/collectors", { cache: 'no-store' }),
-    fetch(`http://localhost:3001/api/collectors/${id}/events`, { cache: 'no-store' })
+    fetch(`${API_URL}/api/collectors`, { cache: 'no-store' }),
+    fetch(`${API_URL}/api/collectors/${id}/events`, { cache: 'no-store' })
   ]);
   if (!collectorsRes.ok || !eventsRes.ok) throw new Error("Failed to fetch data");
   
@@ -21,7 +22,7 @@ async function getCollectorData(id: string) {
   if (!collector) throw new Error("Collector not found");
   
   // Fetch detailed collector data including rows
-  const detailRes = await fetch(`http://localhost:3001/api/collectors/${id}`, { cache: 'no-store' });
+  const detailRes = await fetch(`${API_URL}/api/collectors/${id}`, { cache: 'no-store' });
   if (!detailRes.ok) throw new Error("Failed to fetch collector details");
   const detailData = await detailRes.json();
   

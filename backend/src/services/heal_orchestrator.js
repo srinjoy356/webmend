@@ -1,4 +1,5 @@
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
+const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const { Client } = require('pg');
 // DB driven now
 const path = require('path');
@@ -24,11 +25,11 @@ function execHealCommand(collectorId, prompt, url) {
   return new Promise((resolve, reject) => {
     // Note: The CLI logs progress to stderr and the final JSON to stdout.
     // It can take several minutes to run.
-    const cmd = `cmd /c npx -p @brightdata/cli bdata scraper heal ${collectorId} "${prompt}" --url "${url}"`;
-    console.log(`Executing heal command: ${cmd}`);
+    const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', 'heal', collectorId, prompt, '--url', url];
+    console.log(`Executing heal command via execFile: npx ${args.join(' ')}`);
     
     // Set a very large maxBuffer (e.g., 50MB) and no timeout since heal can take minutes
-    const child = exec(cmd, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
+    const child = execFile(npxCmd, args, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
       // The CLI exits with code 0 on success, or code 1 if it fails.
       // However, even on failure, it outputs the JSON envelope (e.g. status: "heal_trigger_failed")
       try {

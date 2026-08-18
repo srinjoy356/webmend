@@ -10,12 +10,12 @@ export function CreateCollectorModal() {
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({ url: "", description: "", name: "" });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     try {
-      const res = await fetch("http://localhost:3001/api/collectors/create", {
+      const res = await fetch(`${API_URL}/api/collectors/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

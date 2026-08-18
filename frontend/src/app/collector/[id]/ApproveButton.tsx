@@ -11,8 +11,9 @@ export function ApproveButton({ collectorId }: { collectorId: string }) {
 
   async function handleAction(action: 'approve' | 'reject') {
     setLoading(true);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     try {
-      const res = await fetch(`http://localhost:3001/api/collectors/${collectorId}/heal/approve`, {
+      const res = await fetch(`${API_URL}/api/collectors/${collectorId}/heal/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),

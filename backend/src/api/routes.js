@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const { execFile } = require('child_process');
 const { Client } = require('pg');
-// Replaced static config with DB
-const { exec } = require('child_process');
+const router = express.Router();
+const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 
 async function getDbClient() {
   const client = new Client({
@@ -145,12 +145,12 @@ router.post('/collectors/create', async (req, res) => {
     return res.status(400).json({ error: 'url, description, and name are required' });
   }
 
-  // We can't share client across the async callback so create a new one inside
-  const cmd = `cmd /c npx -p @brightdata/cli bdata scraper create "${url}" "${description}" --name "${name}" --json`;
-  console.log(`Executing create command: ${cmd}`);
+  // We use execFile with an args array to avoid command injection
+  const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', 'create', url, description, '--name', name, '--json'];
+  console.log(`Executing create command via execFile: npx ${args.join(' ')}`);
   
   // Set 15min timeout
-  exec(cmd, { maxBuffer: 1024 * 1024 * 50, timeout: 15 * 60 * 1000 }, async (error, stdout, stderr) => {
+  execFile(npxCmd, args, { maxBuffer: 1024 * 1024 * 50, timeout: 15 * 60 * 1000 }, async (error, stdout, stderr) => {
     if (error) {
       console.error("Create failed", error);
       return;
@@ -222,11 +222,11 @@ router.post('/collectors/:id/heal/approve', async (req, res) => {
       return;
     }
 
-    // We execute the bright data CLI for 'approve'
-    const cmd = `cmd /c npx -p @brightdata/cli bdata scraper approve ${collectorId}`;
-    console.log(`Executing: ${cmd}`);
+    // We execute the bright data CLI for 'approve' or 'reject' using execFile
+    const args = ['-p', '@brightdata/cli', 'bdata', 'scraper', action, collectorId];
+    console.log(`Executing: npx ${args.join(' ')}`);
     
-    exec(cmd, async (error, stdout, stderr) => {
+    execFile(npxCmd, args, async (error, stdout, stderr) => {
       if (error) {
         console.error(`Exec error: ${error.message}`);
         await client.query(
