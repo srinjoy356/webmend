@@ -1,0 +1,52 @@
+[
+  {
+    "product_name": "REDMI Note 17 5G (8GB RAM, 128GB, Arctic Blue)",
+    "availability": "Delivery at:",
+    "rating": "Be the First One to Review",
+    "product_page_url": "https://www.croma.com/redmi-note-17-5g-8gb-ram-128gb-arctic-blue-/p/324936",
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    }
+  },
+  {
+    "product_name": "REDMI Note 17 5G (6GB RAM, 128GB, Starlight Purple)",
+    "availability": "Delivery at:",
+    "rating": "Be the First One to Review",
+    "product_page_url": "https://www.croma.com/redmi-note-17-5g-6gb-ram-128gb-starlight-purple-/p/324922",
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    }
+  },
+  {
+    "availability": "Delivery at:",
+    "rating": "Be the First One to Review",
+    "product_page_url": "https://www.croma.com/redmi-note-17-5g-6gb-ram-128gb-arctic-blue-/p/324912",
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    }
+  },
+  {
+    "availability": ".by 20 August 2026Will be delivered",
+    "rating": "Be the First One to Review",
+    "product_page_url": "https://www.croma.com/redmi-note-17-5g-8gb-ram-128gb-dark-night-/p/324933",
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    }
+  },
+  {
+    "product_name": "REDMI Note 17 5G (6GB RAM, 128GB, Dark Night)",
+    "availability": "Delivery at:",
+    "rating": "Be the First One to Review",
+    "product_page_url": "https://www.croma.com/redmi-note-17-5g-6gb-ram-128gb-dark-night-/p/324904",
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    }
+  },
+  {
+    "input": {
+      "url": "https://www.croma.com/campaign/redmi-note-/c/7574"
+    },
+    "error": "Crawler error: Navigation timeout @ https://www.croma.com/redmi-note-17-5g-8gb-ram-128gb-starlight-purple-/p/324943",
+    "error_code": "navigation_timeout"
+  }
+]

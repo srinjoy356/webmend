@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #610010;
+  --color-crimson-deep: #8B001C;
+  --color-forest-pro: #1A3A32;
+  --color-background: #fdf9f1;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #f7f3eb;
+  --color-on-surface: #1c1c17;
+  --color-on-primary: #ffffff;
+
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-space);
+  
+  --radius-xl: 0.75rem;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+}
+
+/* Custom bento-card utilities based on DESIGN.md */
+@utility bento-card {
+  background-color: var(--color-surface-lowest);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  border: 2px solid var(--color-on-surface);
+}
+
+@utility bento-card-primary {
+  background-color: var(--color-forest-pro);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  border: 2px solid var(--color-forest-pro);
+}
+
+@utility bento-card-accent {
+  background-color: var(--color-crimson-deep);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  border: 2px solid var(--color-crimson-deep);
+}
+

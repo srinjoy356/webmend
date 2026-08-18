@@ -1,0 +1,12 @@
+{
+  "product_name": "Modern Granite Fixture",
+  "price": {
+    "value": 129.99,
+    "currency": "USD"
+  },
+  "currency": "$",
+  "stock_status": "In Stock",
+  "image_url": "https://fixture-store.vercel.app/images/fixture-1.jpg",
+  "description": "A sleek granite fixture for modern homes.",
+  "last_checked": "2026-08-17T08:00:00.000Z"
+}

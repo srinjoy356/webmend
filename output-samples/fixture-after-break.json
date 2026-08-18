@@ -1,0 +1,8 @@
+[
+  {
+    "product_name": "Test Product",
+    "input": {
+      "url": "https://fixture-store.vercel.app"
+    }
+  }
+]
