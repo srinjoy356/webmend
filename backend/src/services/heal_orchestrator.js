@@ -1,6 +1,7 @@
 const { execCliCommand } = require('../utils/spawnHelper');
 const { Client } = require('pg');
 // DB driven now
+const socket = require('../socket');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../../.env') });
 
@@ -82,12 +83,6 @@ async function triggerHeal(collectorId, brokenFields) {
     const config = colRes.rows[0];
     const prompt = `The ${brokenFields.join(', ')} fields are returning null since the page redesign. Heal the scraper to recapture them from the new markup, anchored on ${config.target_url}.`;
     
-    // Log the break event
-    await client.query(
-      `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
-      [collectorId, 'break', JSON.stringify({ brokenFields, generatedPrompt: prompt })]
-    );
-
     console.log(`Triggering heal for ${collectorId}. Fields broken: ${brokenFields.join(', ')}`);
     
     // Log heal started
@@ -107,6 +102,8 @@ async function triggerHeal(collectorId, brokenFields) {
       `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
       [collectorId, eventType, JSON.stringify({ resultEnvelope })]
     );
+
+    try { socket.getIO().emit('COLLECTOR_STATUS_CHANGED', { collectorId }); } catch(e) {}
 
     return resultEnvelope;
   } catch (err) {

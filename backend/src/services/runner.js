@@ -1,6 +1,7 @@
 const { execCliCommand } = require('../utils/spawnHelper');
 const { Client } = require('pg');
 // DB driven now
+const socket = require('../socket');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../../.env') });
 
@@ -93,6 +94,8 @@ async function runAndStore(collectorId, overrideUrl = null) {
     // 5. Trigger Health Check
     const { checkRun } = require('./health_checker');
     await checkRun(runId, collectorId);
+
+    try { socket.getIO().emit('COLLECTOR_STATUS_CHANGED', { collectorId }); } catch(e) {}
 
     return { success: true, rows: rows.length };
   } catch (error) {

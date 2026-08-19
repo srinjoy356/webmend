@@ -1,6 +1,7 @@
 const express = require('express');
 const { execCliCommand } = require('../utils/spawnHelper');
 const { Client } = require('pg');
+const socket = require('../socket');
 const router = express.Router();
 
 async function getDbClient() {
@@ -19,7 +20,8 @@ router.get('/collectors', async (req, res) => {
     const collectorsRes = await client.query('SELECT * FROM collectors');
     const dbCollectors = collectorsRes.rows;
     
-    const collectorsWithStatus = await Promise.all(dbCollectors.map(async (collector) => {
+    const collectorsWithStatus = [];
+    for (const collector of dbCollectors) {
       // Get the latest event for status
       const eventsRes = await client.query(
         `SELECT event_type, details, created_at FROM events WHERE collector_id = $1 ORDER BY created_at DESC LIMIT 1`,
@@ -66,16 +68,17 @@ router.get('/collectors', async (req, res) => {
       const successRuns = parseInt(statsRes.rows[0].success, 10) || 0;
       const uptime = totalRuns > 0 ? Math.round((successRuns / totalRuns) * 100) : 100;
       
-      return {
+      collectorsWithStatus.push({
         ...collector,
         status,
         dashboardSummary,
         last_event_time: lastEventTime,
         last_run: runsRes.rows[0] || null,
         runCount: totalRuns,
-        uptime
-      };
-    }));
+        uptime,
+        isFixture: collector.id === process.env.FIXTURE_COLLECTOR_ID
+      });
+    }
     
     res.json(collectorsWithStatus);
   } catch (error) {
@@ -112,7 +115,8 @@ router.get('/collectors/:id', async (req, res) => {
     res.json({
       ...config,
       latest_run: runRes.rows[0] || null,
-      rows
+      rows,
+      isFixture: config.id === process.env.FIXTURE_COLLECTOR_ID
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -206,6 +210,8 @@ router.post('/collectors/:id/heal/approve', async (req, res) => {
           [collectorId, action === 'approve' ? 'heal_approved' : 'heal_rejected', JSON.stringify({ output: stdout })]
         );
         
+        try { socket.getIO().emit('COLLECTOR_STATUS_CHANGED', { collectorId }); } catch(e) {}
+        
         // Automatically trigger a fresh run to verify and pull the recovered data
         if (action === 'approve') {
           const configRes = await client.query('SELECT target_url FROM collectors WHERE id = $1', [collectorId]);
@@ -231,6 +237,45 @@ router.post('/collectors/:id/heal/approve', async (req, res) => {
   } catch (error) {
     await client.end();
     res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/collectors/:id/heal/trigger
+router.post('/collectors/:id/heal/trigger', async (req, res) => {
+  const collectorId = req.params.id;
+  const client = await getDbClient();
+  try {
+    const configRes = await client.query('SELECT target_url FROM collectors WHERE id = $1', [collectorId]);
+    if (configRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Collector not found' });
+    }
+
+    // Get the latest broken fields from the last break event
+    const lastEventRes = await client.query(
+      `SELECT details FROM events WHERE collector_id = $1 AND event_type = 'break' ORDER BY created_at DESC LIMIT 1`,
+      [collectorId]
+    );
+
+    let brokenFields = [];
+    if (lastEventRes.rows.length > 0 && lastEventRes.rows[0].details) {
+      const details = lastEventRes.rows[0].details;
+      brokenFields = details.brokenFields || [];
+    }
+
+    if (brokenFields.length === 0) {
+      return res.status(400).json({ error: 'Cannot trigger heal without knowing broken fields from a past break event.' });
+    }
+
+    const { triggerHeal } = require('../services/heal_orchestrator');
+    
+    // We just fire this in the background, UI shouldn't hang for 5 minutes
+    triggerHeal(collectorId, brokenFields).catch(e => console.error("Manual heal failed", e));
+    
+    res.json({ success: true, message: 'Heal manually triggered' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    await client.end();
   }
 });
 

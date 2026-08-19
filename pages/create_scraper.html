@@ -1,0 +1,304 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>BentoOS - Create Scraper Workbench (Cinematic)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#5c0009",
+                        "on-tertiary-fixed": "#141f00",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed-dim": "#a1d825",
+                        "secondary-fixed-dim": "#ffb3ae",
+                        "secondary-container": "#fe5553",
+                        "primary-fixed": "#bdedd7",
+                        "on-error": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "on-secondary-fixed-variant": "#930014",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#293b00",
+                        "on-secondary-fixed": "#410004",
+                        "primary": "#00261b",
+                        "tertiary": "#172400",
+                        "surface-container-high": "#eae7e7",
+                        "surface-container": "#f0eded",
+                        "surface-dim": "#dcd9d9",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e5e2e1",
+                        "inverse-primary": "#a1d1bc",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#414944",
+                        "on-surface": "#1c1b1b",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary-container": "#7dad00",
+                        "secondary-fixed": "#ffdad7",
+                        "surface-tint": "#3a6756",
+                        "surface-container-low": "#f6f3f2",
+                        "primary-fixed-dim": "#a1d1bc",
+                        "outline-variant": "#c0c8c3",
+                        "on-primary-container": "#7aa894",
+                        "on-primary-fixed": "#002116",
+                        "on-tertiary-fixed-variant": "#374e00",
+                        "primary-container": "#0d3d2e",
+                        "on-background": "#1c1b1b",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#717974",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#224f3f",
+                        "inverse-surface": "#313030",
+                        "tertiary-fixed": "#bcf543",
+                        "secondary": "#b72028",
+                        "inverse-on-surface": "#f3f0ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "card-padding": "24px",
+                        "gutter": "24px",
+                        "margin-page": "40px",
+                        "stack-sm": "8px",
+                        "unit": "4px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Archivo Narrow"],
+                        "code": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Archivo Narrow"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Archivo Narrow"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .preview-container:hover .preview-browser {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 38, 27, 0.15);
+        }
+        
+        .preview-container:hover .preview-selector {
+            animation: scan 3s infinite ease-in-out;
+            opacity: 1;
+        }
+
+        .preview-container:hover .data-packet {
+            animation: flowDown 1.5s infinite linear;
+            opacity: 1;
+        }
+
+        .data-packet:nth-child(2) { animation-delay: 0.5s; }
+        .data-packet:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes scan {
+            0% { top: 20%; left: 10%; width: 30%; height: 20px; }
+            25% { top: 20%; left: 50%; width: 40%; height: 20px; }
+            50% { top: 40%; left: 10%; width: 80%; height: 40px; }
+            75% { top: 70%; left: 20%; width: 20%; height: 20px; }
+            100% { top: 20%; left: 10%; width: 30%; height: 20px; }
+        }
+
+        @keyframes flowDown {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(100px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col items-center justify-center p-4 md:p-margin-page relative">
+<div class="fixed top-8 left-8 hidden lg:flex items-center gap-2 font-code text-[10px] text-primary/50 tracking-widest">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+        CORE_ENG_V4
+    </div>
+<div class="fixed bottom-8 right-8 hidden lg:flex items-center gap-2 font-code text-[10px] text-primary/50 tracking-widest">
+        SELECTOR_MAP
+        <span class="w-2 h-2 bg-tertiary-fixed rounded-full"></span>
+</div>
+<main class="w-full max-w-[1200px] border-2 border-primary bg-surface flex flex-col h-full md:h-auto overflow-hidden relative shadow-[8px_8px_0_0_#00261b]">
+<!-- Header -->
+<header class="flex justify-between items-center p-card-padding border-b-2 border-primary bg-surface relative">
+<div class="absolute left-0 top-0 w-full h-1 bg-[repeating-linear-gradient(90deg,transparent,transparent_4px,#00261b_4px,#00261b_8px)] opacity-20"></div>
+<div class="flex items-center gap-stack-sm">
+<div class="relative">
+<span class="material-symbols-outlined text-primary text-[28px]">bug_report</span>
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-secondary rounded-full border border-surface"></div>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md uppercase text-primary tracking-tight leading-none">CREATE SCRAPER</h1>
+<span class="font-label-caps text-[10px] text-on-surface-variant block mt-1 tracking-widest">NEW COLLECTOR // BENTO_OS</span>
+</div>
+</div>
+<button aria-label="Close" class="text-primary hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[32px]">close</span>
+</button>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto">
+<!-- Main Asymmetric Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 md:divide-x-2 divide-primary border-b-2 border-primary">
+<!-- Left Column (Configuration) - Spans 7 columns -->
+<div class="md:col-span-7 p-card-padding flex flex-col gap-stack-lg bg-surface relative">
+<!-- Editorial Hero inline -->
+<div class="mb-2">
+<h2 class="font-headline-lg text-headline-lg text-primary leading-tight">Turn a URL into a collector.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Configure where BentoOS should crawl and how often it should collect data.</p>
+</div>
+<!-- Section 1: TARGET URL -->
+<section class="flex flex-col gap-stack-sm relative">
+<div class="absolute -left-12 top-8 w-8 border-t border-dashed border-primary/30 hidden lg:block"></div>
+<label class="font-label-caps text-label-caps text-primary flex items-center gap-unit">
+<span class="material-symbols-outlined text-[16px]">public</span>
+                            TARGET URL
+                        </label>
+<div class="relative w-full group">
+<input class="w-full bg-surface-container border-2 border-primary text-primary font-code text-code py-3 px-4 focus:outline-none focus:border-secondary transition-colors placeholder:text-on-surface-variant/50 hover:bg-surface-container-high" placeholder="https://example.com/products" type="text">
+<div class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-tertiary-fixed rounded-sm"></div>
+</div>
+<p class="font-code text-[12px] text-tertiary-container flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                            Reachable HTTPS HTML detected
+                        </p>
+</section>
+<!-- Section 2: SCRAPE FREQUENCY -->
+<section class="flex flex-col gap-stack-md">
+<div class="flex justify-between items-end">
+<label class="font-label-caps text-label-caps text-primary flex items-center gap-unit">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                SCRAPE FREQUENCY
+                            </label>
+<span class="font-code text-[10px] text-on-surface-variant tracking-widest uppercase">Select Mode</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-stack-md">
+<!-- ONE-OFF Option -->
+<button class="group flex flex-col items-start text-left border-2 border-primary p-4 hover:bg-surface-container transition-all relative overflow-hidden">
+<div class="absolute top-0 right-0 w-8 h-8 bg-surface-container border-l-2 border-b-2 border-primary group-hover:bg-primary transition-colors flex items-center justify-center">
+<div class="w-2 h-2 rounded-full border-2 border-primary group-hover:border-surface"></div>
+</div>
+<span class="font-headline-md text-[20px] text-primary mb-1 uppercase tracking-tight">One-Off</span>
+<span class="font-body-md text-[14px] text-on-surface-variant">Collect data a single time.</span>
+</button>
+<!-- RECURRING Option (Selected) -->
+<button class="flex flex-col items-start text-left border-2 border-primary p-4 bg-primary text-surface relative overflow-hidden">
+<div class="absolute top-0 right-0 w-8 h-8 bg-primary border-l-2 border-b-2 border-surface flex items-center justify-center">
+<div class="w-2 h-2 rounded-full border-2 border-surface bg-tertiary-fixed"></div>
+</div>
+<span class="font-headline-md text-[20px] mb-1 text-surface uppercase tracking-tight">Recurring</span>
+<span class="font-body-md text-[14px] text-surface-variant/80">Keep collecting automatically.</span>
+</button>
+</div>
+</section>
+<!-- Section 3: Recurring Controls -->
+<section class="flex flex-col sm:flex-row gap-gutter p-4 bg-surface-container-low border-2 border-primary relative">
+<div class="absolute -top-2 left-4 px-2 bg-surface font-code text-[10px] text-primary tracking-widest">CRON_CFG</div>
+<div class="flex-1 flex flex-col gap-stack-sm">
+<label class="font-label-caps text-[10px] text-on-surface-variant">RUN EVERY</label>
+<div class="relative">
+<select class="w-full bg-surface border-2 border-primary text-primary font-code text-[14px] py-2 px-3 focus:outline-none focus:border-secondary appearance-none rounded-none cursor-pointer">
+<option>15 min</option>
+<option>30 min</option>
+<option>1 hour</option>
+<option selected="">6 hours</option>
+<option>12 hours</option>
+<option>24 hours</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-primary">expand_more</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-stack-sm">
+<label class="font-label-caps text-[10px] text-on-surface-variant">START AT (UTC)</label>
+<input class="w-full bg-surface border-2 border-primary text-primary font-code text-[14px] py-2 px-3 focus:outline-none focus:border-secondary rounded-none" type="time" value="00:00">
+</div>
+</section>
+</div>
+<!-- Right Column (Preview) - Spans 5 columns -->
+<div class="md:col-span-5 bg-surface p-card-padding flex flex-col border-t-2 md:border-t-0 border-primary relative overflow-hidden">
+<div class="absolute right-0 top-0 w-full h-full bg-[radial-gradient(#00261b_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.03]"></div>
+<div class="flex justify-between items-center mb-stack-md relative z-10">
+<label class="font-label-caps text-label-caps text-primary flex items-center gap-unit">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                            COLLECTOR PREVIEW
+                        </label>
+<span class="font-code text-[10px] px-2 py-1 bg-surface-container border border-primary/20 text-primary uppercase">Live</span>
+</div>
+<div class="flex-1 border-2 border-primary bg-surface-container-low p-8 flex flex-col items-center justify-center relative preview-container cursor-crosshair">
+<!-- Living Preview Construction -->
+<div class="relative w-full max-w-[280px] aspect-square flex flex-col items-center justify-center">
+<!-- Browser Mockup -->
+<div class="preview-browser w-full h-full bg-surface border-2 border-primary rounded-t-md relative transition-all duration-300 z-10 flex flex-col overflow-hidden">
+<!-- Browser Header -->
+<div class="h-6 border-b-2 border-primary bg-surface-container flex items-center px-2 gap-1 shrink-0">
+<div class="w-2 h-2 rounded-full border border-primary"></div>
+<div class="w-2 h-2 rounded-full border border-primary"></div>
+<div class="w-2 h-2 rounded-full border border-primary"></div>
+</div>
+<!-- Browser Body -->
+<div class="flex-1 p-3 relative overflow-hidden flex items-center justify-center bg-surface w-full"><animated-svg src="{{DATA:SCREEN:SCREEN_4}}" class="w-full h-full"></animated-svg></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / Bottom Actions -->
+<footer class="p-card-padding bg-surface border-t-2 border-primary flex flex-col sm:flex-row items-center justify-between gap-stack-md">
+<!-- Technical Status Strip -->
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 font-code text-[12px] text-primary w-full sm:w-auto bg-surface-container px-4 py-2 border border-primary/20">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant opacity-70">TARGET</span>
+<span class="font-bold bg-surface px-1 border border-primary/10">example.com</span>
+</div>
+<div class="w-px h-3 bg-primary/30 hidden md:block"></div>
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant opacity-70">MODE</span>
+<span class="font-bold text-primary bg-tertiary-fixed px-1 border border-primary/10">RECURRING</span>
+</div>
+<div class="w-px h-3 bg-primary/30 hidden md:block"></div>
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant opacity-70">FREQ</span>
+<span class="font-bold bg-surface px-1 border border-primary/10">6h</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-stack-sm w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-6 py-2.5 font-label-caps text-label-caps text-primary hover:bg-surface-container transition-colors uppercase tracking-wider">
+                    Cancel
+                </button>
+<button class="flex-1 sm:flex-none px-8 py-2.5 font-label-caps text-label-caps text-surface bg-secondary border-2 border-secondary hover:bg-on-secondary-container transition-colors uppercase tracking-wider flex items-center justify-center gap-2 group relative overflow-hidden">
+<span class="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-32 group-hover:h-32 opacity-10"></span>
+<span class="material-symbols-outlined text-[16px] relative z-10">play_arrow</span>
+<span class="relative z-10">CREATE SCRAPER</span>
+</button>
+</div>
+</footer>
+</main>
+
+
+</body></html>

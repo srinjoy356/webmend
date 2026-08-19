@@ -1,0 +1,373 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>BentoOS | Integrations</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&amp;family=Hanken+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#ffb3b1",
+                        "on-secondary-fixed": "#410007",
+                        "outline-variant": "#474741",
+                        "on-primary-fixed-variant": "#474743",
+                        "secondary-fixed-dim": "#ffb3b1",
+                        "surface-variant": "#353534",
+                        "surface-container-lowest": "#0e0e0e",
+                        "inverse-on-surface": "#313030",
+                        "surface-dim": "#131313",
+                        "on-secondary-fixed-variant": "#92001c",
+                        "tertiary-fixed-dim": "#6fd8c8",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c8c6c2",
+                        "surface-container": "#201f1f",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "tertiary": "#ffffff",
+                        "inverse-surface": "#e5e2e1",
+                        "brand-red": "#E63946",
+                        "on-background": "#e5e2e1",
+                        "secondary-fixed": "#ffdad8",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-primary-fixed": "#1c1c19",
+                        "background": "#131313",
+                        "on-tertiary": "#003731",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "surface": "#131313",
+                        "interaction-lime": "#BCF543",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-primary": "#5f5e5b",
+                        "primary-container": "#e5e2dd",
+                        "on-tertiary-container": "#007166",
+                        "paper-cream": "#F9F6F1",
+                        "on-secondary": "#680011",
+                        "outline": "#919189",
+                        "brand-green": "#2A9D8F",
+                        "error": "#ffb4ab",
+                        "ink-black": "#0A0A0A",
+                        "secondary-container": "#ad0224",
+                        "on-primary-container": "#656461",
+                        "tertiary-fixed": "#8cf5e4",
+                        "tertiary-container": "#8cf5e4",
+                        "primary-fixed": "#e5e2dd",
+                        "on-secondary-container": "#ffb8b5",
+                        "on-primary": "#31302d",
+                        "on-error": "#690005",
+                        "surface-bright": "#3a3939",
+                        "on-surface": "#e5e2e1",
+                        "primary": "#ffffff",
+                        "on-surface-variant": "#c8c7be",
+                        "deep-forest": "#0D3D2E",
+                        "surface-tint": "#c8c6c2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem",
+                        "bento": "4px 12px 6px 8px",
+                        "bento-sm": "2px 8px 4px 6px"
+                    },
+                    "spacing": {
+                        "grid-margin": "1.25vw",
+                        "stack-loose": "1.5rem",
+                        "grid-gutter": "1.25vw",
+                        "panel-padding": "2rem",
+                        "stack-tight": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Archivo Narrow"],
+                        "headline-md": ["Archivo Narrow"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-mono": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Archivo Narrow"],
+                        "headline-lg-mobile": ["Archivo Narrow"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["80px", { "lineHeight": "0.9", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "1.1", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-mono": ["13px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["36px", { "lineHeight": "1.1", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .bento-hover {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-hover:hover {
+            transform: scale(1.01);
+            z-index: 10;
+        }
+        .bg-pattern-dots {
+            background-image: radial-gradient(var(--tw-colors-primary-fixed-dim) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .packet-anim {
+            animation: dash 2s linear infinite;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+    </style>
+</head>
+<body class="bg-paper-cream text-ink-black font-body-md min-h-screen flex flex-col bg-pattern-dots selection:bg-interaction-lime selection:text-ink-black">
+<!-- TopNavBar -->
+<!-- Main Content -->
+<main class="flex-grow p-grid-margin w-full max-w-[1600px] mx-auto flex flex-col gap-grid-gutter bg-paper-cream border-2 border-ink-black rounded-xl shadow-[4px_4px_0px_0px_rgba(10,10,10,1)] mt-8">
+<div class="p-8">
+<!-- Header -->
+<header class="flex flex-col gap-2 mb-8"><a class="flex items-center gap-2 font-headline-md text-[16px] uppercase tracking-tight text-on-primary-container hover:text-brand-red transition-colors mb-2 w-max group" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+    Go Back
+</a>
+<div class="flex items-center gap-3 font-label-mono text-[11px] bg-primary-container text-on-primary-container px-3 py-1 rounded-full uppercase tracking-widest w-max border border-ink-black/10">
+<span class="material-symbols-outlined text-[1rem]">lan</span>
+                DATA DESTINATIONS // WEBHOOKS // EXPORTS
+            </div>
+<h1 class="font-headline-lg text-headline-lg md:text-display-lg uppercase tracking-tighter text-deep-forest">Integrations</h1>
+<p class="font-body-lg text-body-lg text-on-primary-container max-w-2xl">Route collected data to the systems that need it. Configure structural payloads, authentication headers, and delivery lifecycles.</p>
+</header>
+<!-- Bento Grid Layer 1 -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- CREATE WEBHOOK (Main Panel) -->
+<section class="lg:col-span-8 bg-paper-cream border-2 border-deep-forest rounded-xl p-panel-padding bento-hover flex flex-col gap-6 relative overflow-hidden group shadow-[4px_4px_0px_0px_rgba(13,61,46,1)]">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md uppercase text-deep-forest border-b-2 border-brand-green pb-1 inline-block">Create Webhook</h2>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-mono text-label-mono uppercase text-on-primary-container font-bold">Webhook URL</label>
+<div class="flex gap-2">
+<input class="flex-grow bg-white text-ink-black font-label-mono text-label-mono p-3 border-2 border-ink-black rounded-md focus:outline-none focus:border-brand-green transition-colors" type="text" value="https://api.example.com/webhook">
+<button class="bg-deep-forest text-paper-cream font-label-mono text-label-mono px-6 py-3 uppercase border-2 border-deep-forest rounded-md hover:bg-interaction-lime hover:text-ink-black transition-colors whitespace-nowrap bento-hover flex items-center gap-2 group/btn font-bold">
+                            Test Connection
+                            <span class="material-symbols-outlined text-[1rem] group-hover/btn:animate-spin">sync</span>
+</button>
+</div>
+<div class="flex items-center gap-4 mt-2 font-label-mono text-[11px] uppercase tracking-wider text-on-primary-container">
+<span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-primary-fixed-dim"></div> Connecting</span>
+<span class="material-symbols-outlined text-[14px]">arrow_right_alt</span>
+<span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-primary-fixed-dim"></div> Sending Test Payload</span>
+<span class="material-symbols-outlined text-[14px]">arrow_right_alt</span>
+<span class="flex items-center gap-1 text-brand-green font-bold"><div class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></div> 200 OK - Connection Healthy</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+<!-- Payload Format -->
+<div class="flex flex-col gap-3">
+<label class="font-label-mono text-label-mono uppercase text-on-primary-container font-bold">Payload Format</label>
+<div class="flex gap-3 h-full">
+<button class="flex-1 bg-deep-forest text-paper-cream p-4 border-2 border-deep-forest rounded-md flex flex-col items-start gap-2 relative overflow-hidden bento-hover">
+<span class="material-symbols-outlined text-interaction-lime">data_object</span>
+<span class="font-label-mono text-label-mono font-bold">JSON</span>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-interaction-lime animate-pulse"></div>
+</button>
+<button class="flex-1 bg-paper-cream text-ink-black p-4 border-2 border-ink-black rounded-md flex flex-col items-start gap-2 hover:bg-white transition-colors bento-hover">
+<span class="material-symbols-outlined">view_comfy</span>
+<span class="font-label-mono text-label-mono font-bold">CSV</span>
+</button>
+</div>
+</div>
+<!-- Send Events -->
+<div class="flex flex-col gap-3">
+<label class="font-label-mono text-label-mono uppercase text-on-primary-container font-bold">Send Events</label>
+<div class="grid grid-cols-2 gap-2">
+<label class="flex items-center gap-2 p-2 bg-deep-forest text-paper-cream border-2 border-deep-forest rounded-md cursor-pointer transition-colors relative">
+<input checked="" class="accent-interaction-lime w-4 h-4 rounded-sm border-ink-black" type="checkbox">
+<span class="font-label-mono text-[11px] uppercase font-bold">Scrape Complete</span>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-interaction-lime"></div>
+</label>
+<label class="flex items-center gap-2 p-2 bg-deep-forest text-paper-cream border-2 border-deep-forest rounded-md cursor-pointer transition-colors relative">
+<input checked="" class="accent-interaction-lime w-4 h-4 rounded-sm border-ink-black" type="checkbox">
+<span class="font-label-mono text-[11px] uppercase font-bold">Data Updated</span>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-interaction-lime"></div>
+</label>
+<label class="flex items-center gap-2 p-2 bg-white text-ink-black border-2 border-ink-black rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+<input class="accent-interaction-lime w-4 h-4 rounded-sm border-ink-black" type="checkbox">
+<span class="font-label-mono text-[11px] uppercase font-bold">Schema Changed</span>
+</label>
+<label class="flex items-center gap-2 p-2 bg-white text-ink-black border-2 border-ink-black rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+<input class="accent-interaction-lime w-4 h-4 rounded-sm border-ink-black" type="checkbox">
+<span class="font-label-mono text-[11px] uppercase font-bold">Heal Complete</span>
+</label>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t-2 border-ink-black/10">
+<button class="w-full flex justify-between items-center font-label-mono text-label-mono uppercase text-ink-black font-bold hover:text-brand-red transition-colors group">
+<span class="">Request Headers (2 Active)</span>
+<span class="material-symbols-outlined group-hover:translate-y-1 transition-transform">expand_more</span>
+</button>
+<!-- Simulated expanded state -->
+<div class="grid grid-cols-12 gap-2 mt-4 items-center">
+<input class="col-span-4 bg-white text-ink-black font-label-mono text-[12px] p-2 border-2 border-ink-black rounded-md focus:outline-none" type="text" value="Authorization">
+<input class="col-span-7 bg-white text-ink-black font-label-mono text-[12px] p-2 border-2 border-ink-black rounded-md focus:outline-none" type="password" value="Bearer eyJhb...">
+<button class="col-span-1 flex justify-center text-brand-red hover:scale-110 transition-transform"><span class="material-symbols-outlined">delete</span></button>
+<input class="col-span-4 bg-white text-ink-black font-label-mono text-[12px] p-2 border-2 border-ink-black rounded-md focus:outline-none" type="text" value="X-API-Key">
+<input class="col-span-7 bg-white text-ink-black font-label-mono text-[12px] p-2 border-2 border-ink-black rounded-md focus:outline-none" type="password" value="xk_prod_992...">
+<button class="col-span-1 flex justify-center text-brand-red hover:scale-110 transition-transform"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</div>
+</section>
+<!-- DELIVERY STATUS (Right Side) -->
+<section class="lg:col-span-4 bg-deep-forest text-paper-cream border-2 border-deep-forest rounded-xl p-panel-padding bento-hover flex flex-col gap-6 relative overflow-hidden group shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<h2 class="font-headline-md text-headline-md uppercase border-b-2 border-interaction-lime pb-1 inline-block w-max">Delivery Status</h2>
+<div class="flex flex-col gap-1">
+<div class="font-display-lg text-[64px] font-bold tracking-tighter text-interaction-lime leading-none">98.7%</div>
+<div class="font-label-mono text-label-mono uppercase tracking-widest text-primary-fixed-dim">Successful Deliveries</div>
+</div>
+<div class="grid grid-cols-2 gap-4 border-y-2 border-primary-fixed-dim/30 py-4">
+<div class="flex flex-col">
+<span class="font-label-mono text-[24px] text-paper-cream font-bold">1,482</span>
+<span class="font-label-mono text-[10px] uppercase text-primary-fixed-dim">Delivered</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-mono text-[24px] text-brand-red font-bold">19</span>
+<span class="font-label-mono text-[10px] uppercase text-primary-fixed-dim">Failed</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-mono text-[24px] text-paper-cream font-bold">12 ms</span>
+<span class="font-label-mono text-[10px] uppercase text-primary-fixed-dim">Median Latency</span>
+</div>
+</div>
+<div class="flex-grow flex flex-col gap-2">
+<span class="font-label-mono text-[11px] uppercase text-primary-fixed-dim font-bold">Routing Diagram</span>
+<div class="w-full h-32 bg-surface text-ink-black rounded-md relative overflow-hidden flex items-center justify-center p-2 font-label-mono text-[10px] font-bold">
+<div class="flex items-center justify-between w-full text-paper-cream px-2">
+<div class="bg-ink-black border border-interaction-lime p-2 rounded z-10">COLLECTOR</div>
+<div class="flex-grow h-px bg-interaction-lime/30 relative mx-2">
+<div class="absolute w-2 h-2 bg-interaction-lime rounded-full top-1/2 -translate-y-1/2 animate-[dash_2s_linear_infinite] left-0"></div>
+</div>
+<div class="bg-deep-forest border border-interaction-lime p-2 rounded z-10 text-interaction-lime">BENTOOS</div>
+<div class="flex-grow h-px bg-interaction-lime/30 relative mx-2">
+<div class="absolute w-2 h-2 bg-interaction-lime rounded-full top-1/2 -translate-y-1/2 animate-[dash_2s_linear_infinite_0.5s] left-0"></div>
+</div>
+<div class="bg-ink-black border border-interaction-lime p-2 rounded z-10">WEBHOOK</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bento Grid Layer 2 -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+<!-- PAYLOAD PREVIEW (Side Panel) -->
+<section class="lg:col-span-4 bg-ink-black text-paper-cream border-2 border-ink-black rounded-xl p-panel-padding bento-hover flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<div class="flex justify-between items-center border-b-2 border-surface-variant pb-2">
+<h2 class="font-label-mono text-label-mono uppercase text-interaction-lime font-bold">Payload Preview</h2>
+<span class="material-symbols-outlined text-surface-tint text-[16px]">code</span>
+</div>
+<pre class="font-label-mono text-[12px] leading-relaxed overflow-x-auto text-paper-cream h-full max-h-[300px]"><span class="">{</span>
+  <span class="text-brand-green">"event_id"</span>: <span class="text-paper-cream">"evt_9x8a7b6c"</span>,
+  <span class="text-brand-green">"type"</span>: <span class="text-paper-cream">"scrape.complete"</span>,
+  <span class="text-brand-green">"timestamp"</span>: <span class="text-interaction-lime">1698745200</span>,
+  <span class="text-brand-green">"data"</span>: <span class="">{</span>
+    <span class="text-brand-green">"pipeline_id"</span>: <span class="text-paper-cream">"pl_industrial_01"</span>,
+    <span class="text-brand-green">"records_extracted"</span>: <span class="text-interaction-lime">4502</span>,
+    <span class="text-brand-green">"schema_version"</span>: <span class="text-paper-cream">"v2.4.0"</span>
+  <span class="">}</span>,
+  <span class="text-brand-green">"metadata"</span>: <span class="">{</span>
+    <span class="text-brand-green">"source"</span>: <span class="text-paper-cream">"BentoOS_Core"</span>,
+    <span class="text-brand-green">"environment"</span>: <span class="text-paper-cream">"production"</span>
+  <span class="">}</span>
+<span class="">}</span></pre>
+</section>
+<!-- ACTIVE DESTINATIONS (Wide Section) -->
+<section class="lg:col-span-8 bg-paper-cream border-2 border-ink-black rounded-xl p-panel-padding bento-hover flex flex-col gap-6 shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<h2 class="font-headline-md text-headline-md uppercase border-b-2 border-ink-black pb-1 inline-block w-max text-ink-black">Active Destinations</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Card 1 -->
+<div class="bg-white text-ink-black p-4 border-2 border-ink-black rounded-md flex flex-col gap-3 hover:border-brand-green transition-colors group cursor-pointer shadow-[2px_2px_0px_0px_rgba(10,10,10,1)]">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-primary-container text-ink-black rounded-sm">public</span>
+<div class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></div>
+</div>
+<div>
+<div class="font-headline-md text-[20px] leading-tight uppercase font-bold text-deep-forest">Production Webhook</div>
+<div class="font-label-mono text-[10px] uppercase text-on-primary-container mt-1 font-bold">api.main-sys.io/ingest</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white text-ink-black p-4 border-2 border-ink-black rounded-md flex flex-col gap-3 hover:border-brand-green transition-colors group cursor-pointer shadow-[2px_2px_0px_0px_rgba(10,10,10,1)]">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-primary-container text-ink-black rounded-sm">monitoring</span>
+<div class="w-2 h-2 rounded-full bg-brand-green"></div>
+</div>
+<div>
+<div class="font-headline-md text-[20px] leading-tight uppercase font-bold text-deep-forest">Analytics Pipeline</div>
+<div class="font-label-mono text-[10px] uppercase text-on-primary-container mt-1 font-bold">GCP Pub/Sub Topic</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-primary-container text-on-primary-container p-4 border-2 border-ink-black/20 rounded-md flex flex-col gap-3 group cursor-pointer relative overflow-hidden hover:border-ink-black transition-colors border-dashed">
+<div class="relative z-10 flex justify-between items-start opacity-70 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined p-2 bg-white rounded-sm text-ink-black border border-ink-black/10">database</span>
+<div class="w-2 h-2 rounded-full bg-primary-fixed-dim"></div>
+</div>
+<div class="relative z-10 opacity-70 group-hover:opacity-100 transition-opacity">
+<div class="font-headline-md text-[20px] leading-tight uppercase font-bold text-ink-black">Backup Storage</div>
+<div class="font-label-mono text-[10px] uppercase text-ink-black mt-1 font-bold">AWS S3 Coldline</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- RECENT DELIVERY LOG -->
+<section class="bg-paper-cream border-2 border-ink-black rounded-xl p-panel-padding bento-hover flex flex-col gap-4 mt-6 shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<h2 class="font-label-mono text-label-mono uppercase text-ink-black border-b-2 border-ink-black/10 pb-2 font-bold">Recent Delivery Log</h2>
+<div class="flex flex-col gap-2 font-label-mono text-[12px] uppercase font-bold">
+<div class="grid grid-cols-12 gap-4 py-2 border-b-2 border-ink-black/10 text-ink-black hover:bg-white transition-colors px-2 rounded-sm cursor-crosshair">
+<div class="col-span-2 text-on-primary-container">10:42:15 UTC</div>
+<div class="col-span-3 text-deep-forest">scrape.complete</div>
+<div class="col-span-4 text-on-primary-container truncate">https://api.example.com/webhook</div>
+<div class="col-span-2 text-brand-green flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">check_circle</span> 200 OK</div>
+<div class="col-span-1 text-right text-on-primary-container">14ms</div>
+</div>
+<div class="grid grid-cols-12 gap-4 py-2 border-b-2 border-ink-black/10 text-ink-black hover:bg-white transition-colors px-2 rounded-sm cursor-crosshair">
+<div class="col-span-2 text-on-primary-container">10:41:02 UTC</div>
+<div class="col-span-3 text-deep-forest">data.updated</div>
+<div class="col-span-4 text-on-primary-container truncate">https://api.example.com/webhook</div>
+<div class="col-span-2 text-brand-green flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">check_circle</span> 200 OK</div>
+<div class="col-span-1 text-right text-on-primary-container">11ms</div>
+</div>
+<div class="grid grid-cols-12 gap-4 py-2 border-b-2 border-brand-red/20 text-ink-black hover:bg-white transition-colors px-2 rounded-sm cursor-crosshair bg-brand-red/5">
+<div class="col-span-2 text-on-primary-container">10:38:45 UTC</div>
+<div class="col-span-3 text-deep-forest">schema.changed</div>
+<div class="col-span-4 text-on-primary-container truncate">https://api.legacy-sys.io/v1</div>
+<div class="col-span-2 text-brand-red flex items-center gap-2"><span class="material-symbols-outlined text-[14px]">error</span> 503 UNAVAIL</div>
+<div class="col-span-1 text-right text-on-primary-container">405ms</div>
+</div>
+</div>
+</section>
+<!-- Sticky Action Bar -->
+<div class="mt-8 bg-paper-cream border-2 border-ink-black rounded-xl p-4 flex justify-between items-center shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]">
+<div class="flex gap-4">
+<button class="bg-transparent text-ink-black font-label-mono text-label-mono px-6 py-3 uppercase font-bold hover:text-brand-red transition-colors">Cancel</button>
+<button class="bg-white text-ink-black font-label-mono text-label-mono px-6 py-3 uppercase font-bold border-2 border-ink-black rounded-md hover:bg-primary-container transition-colors shadow-[2px_2px_0px_0px_rgba(10,10,10,1)] active:shadow-none active:translate-y-[2px] active:translate-x-[2px]">Send Test</button>
+</div>
+<button class="bg-brand-red text-paper-cream font-headline-md text-[20px] px-8 py-3 uppercase font-bold border-2 border-ink-black rounded-md hover:scale-105 transition-transform shadow-[4px_4px_0px_0px_rgba(10,10,10,1)] active:scale-95 flex items-center gap-2">
+                Save Integration
+                <span class="material-symbols-outlined">save</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+
+
+
+</body></html>

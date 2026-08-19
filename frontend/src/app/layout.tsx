@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { SocketProvider } from "@/components/SocketProvider";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -35,7 +36,10 @@ export default function RootLayout({
       lang="en"
       className={`${bricolage.variable} ${jakarta.variable} ${space.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col p-8">{children}</body>
+      <body className="min-h-full flex flex-col p-8">
+        <SocketProvider />
+        {children}
+      </body>
     </html>
   );
 }

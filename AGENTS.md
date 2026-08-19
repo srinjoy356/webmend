@@ -27,5 +27,5 @@ SCRAPER_STUDIO_COLLECTOR_ID=c_mswxou59gsluhekiy
 RUN COMMAND: cmd /c npx -p @brightdata/cli bdata scraper run c_mswxou59gsluhekiy --urls "https://www.croma.com/campaign/redmi-note-/c/7574" --pretty
 
 ---
-FIXTURE_COLLECTOR_ID=c_mswy3fc02128qburqf
-FIXTURE RUN COMMAND: cmd /c npx -p @brightdata/cli bdata scraper run c_mswy3fc02128qburqf --urls "https://fixture-store.vercel.app" --pretty
+FIXTURE_COLLECTOR_ID=c_mszzfvhi1m53bnermk
+FIXTURE RUN COMMAND: cmd /c npx -p @brightdata/cli bdata scraper run c_mszzfvhi1m53bnermk --urls "https://fixture-store.vercel.app" --pretty

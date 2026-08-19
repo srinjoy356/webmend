@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 // DB driven now
 const { triggerHeal } = require('./heal_orchestrator');
+const socket = require('../socket');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../../.env') });
 
@@ -124,9 +125,31 @@ async function checkRun(runId, collectorId) {
         console.error("Webhook dispatch failed", e);
       }
       
-      // We will await the heal orchestrator so the runner process stays alive
-      // until the AI finishes proposing a template.
-      await triggerHeal(collectorId, brokenFields);
+      // LOG THE BREAK EVENT
+      const prompt = `The ${brokenFields.join(', ')} fields are returning null since the page redesign. Heal the scraper to recapture them from the new markup, anchored on ${config.target_url}.`;
+      await client.query(
+        `INSERT INTO events (collector_id, event_type, details) VALUES ($1, $2, $3)`,
+        [collectorId, 'break', JSON.stringify({ brokenFields, generatedPrompt: prompt })]
+      );
+      try { socket.getIO().emit('COLLECTOR_STATUS_CHANGED', { collectorId }); } catch(e) {}
+
+      // Check if we just approved a heal recently to prevent infinite heal loops
+      const lastEventsRes = await client.query(
+        `SELECT event_type, created_at FROM events WHERE collector_id = $1 ORDER BY created_at DESC LIMIT 5`,
+        [collectorId]
+      );
+      const recentApproval = lastEventsRes.rows.find(e => 
+        e.event_type === 'heal_approved' && 
+        (new Date() - new Date(e.created_at)) < 5 * 60 * 1000
+      );
+
+      if (recentApproval) {
+        console.warn(`Skipping heal trigger because a heal was approved less than 5 minutes ago.`);
+      } else {
+        // We will await the heal orchestrator so the runner process stays alive
+        // until the AI finishes proposing a template.
+        await triggerHeal(collectorId, brokenFields);
+      }
       
       return { status: 'broken', brokenFields, dashboardSummary };
     } else {

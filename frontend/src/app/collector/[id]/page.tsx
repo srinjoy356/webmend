@@ -7,6 +7,7 @@ import { HistoryCharts } from "./HistoryCharts";
 import { SimulateBreakButton } from "./SimulateBreakButton";
 import { RunButton } from "./RunButton";
 import { DiffViewer } from "./DiffViewer";
+import { HealButton } from "./HealButton";
 
 async function getCollectorData(id: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -38,6 +39,7 @@ export default async function CollectorDetailPage({ params }: { params: Promise<
   const topEvent = events && events.length > 0 ? events[0].event_type : null;
   const isPending = topEvent === 'heal_pending';
   const isHealing = topEvent === 'heal_started';
+  const isBroken = topEvent === 'break';
   const hideSimulate = isPending || isHealing;
 
   return (
@@ -53,7 +55,10 @@ export default async function CollectorDetailPage({ params }: { params: Promise<
               {!hideSimulate && (
                 <div className="flex gap-2">
                   <RunButton collectorId={collector.id} />
-                  {collector.id === "c_mswy3fc02128qburqf" && (
+                  {isBroken && (
+                    <HealButton collectorId={collector.id} />
+                  )}
+                  {collector.isFixture && (
                     <SimulateBreakButton collectorId={collector.id} />
                   )}
                 </div>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BentoOS - Data Lake / Run History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#003731",
+                        "on-error": "#690005",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#2a2a2a",
+                        "primary": "#ffffff",
+                        "surface-tint": "#c8c6c2",
+                        "on-background": "#e5e2e1",
+                        "background": "#131313",
+                        "surface-container-low": "#1c1b1b",
+                        "paper-cream": "#F9F6F1",
+                        "tertiary-fixed-dim": "#6fd8c8",
+                        "surface": "#131313",
+                        "brand-red": "#E63946",
+                        "surface-variant": "#353534",
+                        "on-secondary-fixed": "#410007",
+                        "tertiary-container": "#8cf5e4",
+                        "on-primary-container": "#656461",
+                        "secondary-fixed-dim": "#ffb3b1",
+                        "outline-variant": "#474741",
+                        "secondary-container": "#ad0224",
+                        "inverse-on-surface": "#313030",
+                        "secondary-fixed": "#ffdad8",
+                        "on-surface-variant": "#c8c7be",
+                        "on-surface": "#e5e2e1",
+                        "on-primary": "#31302d",
+                        "deep-forest": "#0D3D2E",
+                        "tertiary-fixed": "#8cf5e4",
+                        "on-primary-fixed-variant": "#474743",
+                        "secondary": "#ffb3b1",
+                        "error": "#ffb4ab",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-tertiary-fixed": "#00201c",
+                        "inverse-primary": "#5f5e5b",
+                        "tertiary": "#ffffff",
+                        "on-secondary-container": "#ffb8b5",
+                        "on-secondary-fixed-variant": "#92001c",
+                        "on-tertiary-container": "#007166",
+                        "surface-container-highest": "#353534",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#919189",
+                        "primary-container": "#e5e2dd",
+                        "surface-dim": "#131313",
+                        "surface-bright": "#3a3939",
+                        "ink-black": "#0A0A0A",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed": "#e5e2dd",
+                        "interaction-lime": "#BCF543",
+                        "on-primary-fixed": "#1c1c19",
+                        "brand-green": "#2A9D8F",
+                        "primary-fixed-dim": "#c8c6c2",
+                        "on-secondary": "#680011",
+                        "inverse-surface": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-loose": "1.5rem",
+                        "panel-padding": "2rem",
+                        "grid-gutter": "1.25vw",
+                        "stack-tight": "0.5rem",
+                        "grid-margin": "1.25vw"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Archivo Narrow"],
+                        "label-mono": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Archivo Narrow"],
+                        "headline-lg-mobile": ["Archivo Narrow"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Archivo Narrow"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["80px", {"lineHeight": "0.9", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                        "label-mono": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["36px", {"lineHeight": "1.1", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.1", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Styles for Brutalist Bento Aesthetic */
+        body {
+            background-color: #F9F6F1; /* Force cream background ignoring dark mode for this specific brutalist brand requirement */
+            color: #0A0A0A;
+        }
+        
+        .drawn-border {
+            border: 2px solid #0A0A0A;
+            border-radius: 4px 12px 6px 8px;
+        }
+        
+        .drawn-border-sm {
+            border: 2px solid #0A0A0A;
+            border-radius: 2px 6px 3px 4px;
+        }
+
+        .drawn-border-bottom {
+            border-bottom: 2px solid #0A0A0A;
+        }
+
+        .bento-panel {
+            background-color: #F9F6F1;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 4px 4px 0px 0px #0A0A0A;
+        }
+
+        .bento-panel:hover {
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 6px 6px 0px 0px #0A0A0A;
+            z-index: 10;
+        }
+
+        .bento-panel-green {
+            background-color: #2A9D8F;
+            color: #F9F6F1;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 4px 4px 0px 0px #0A0A0A;
+        }
+
+        .bento-panel-green:hover {
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 6px 6px 0px 0px #0A0A0A;
+            z-index: 10;
+        }
+
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(10, 10, 10, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(10, 10, 10, 0.05) 1px, transparent 1px);
+        }
+
+        .pulse-lime {
+            animation: pulse-lime 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-lime {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(188, 245, 67, 0.7); }
+            50% { opacity: .7; box-shadow: 0 0 0 4px rgba(188, 245, 67, 0); }
+        }
+
+        .pulse-red {
+            animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+            50% { opacity: .7; box-shadow: 0 0 0 4px rgba(230, 57, 70, 0); }
+        }
+
+        .spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        
+        .spin-fast {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .row-hover-group:hover {
+            background-color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 10;
+            position: relative;
+        }
+        
+        .row-hover-group:hover .status-dot {
+            animation: pulse-lime 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .row-hover-group:hover .data-ready-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .data-ready-label {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Override dark mode text colors for this specific white-background brand requirement */
+        .dark .override-dark-text {
+            color: #0A0A0A;
+        }
+        
+        .table-row-brutal {
+            border-bottom: 2px solid #0A0A0A;
+            transition: all 0.2s ease;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F9F6F1;
+            border-left: 2px solid #0A0A0A;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0A0A0A;
+            border-radius: 4px;
+        }
+        
+        /* New Animations */
+        @keyframes floatDrop {
+            0% { transform: translateY(-5px); opacity: 0; }
+            30% { transform: translateY(0); opacity: 1; }
+            70% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(10px); opacity: 0; }
+        }
+        .anim-float-drop { animation: floatDrop 2s infinite; }
+        
+        @keyframes healCrack {
+            0%, 40% { border-color: #E63946; }
+            60%, 100% { border-color: #2A9D8F; }
+        }
+        .anim-heal-crack { animation: healCrack 3s infinite; }
+        
+        @keyframes crawlProgress {
+            0% { left: 0%; transform: scaleX(1); }
+            49% { left: 100%; transform: scaleX(1); }
+            50% { left: 100%; transform: scaleX(-1); }
+            99% { left: 0%; transform: scaleX(-1); }
+            100% { left: 0%; transform: scaleX(1); }
+        }
+        .anim-crawl-progress { animation: crawlProgress 4s linear infinite; }
+        
+        @keyframes dataStoreTravel {
+            0% { transform: translateX(-50px); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(150px); opacity: 0; }
+        }
+        .anim-datastore-travel { animation: dataStoreTravel 3s linear infinite; }
+    </style>
+</head>
+<body class="min-h-screen grid-bg font-body-md text-ink-black overflow-x-hidden pt-8">
+<!-- Main Canvas Layout -->
+<main class="w-full max-w-[1600px] mx-auto px-grid-margin py-stack-loose flex flex-col gap-8">
+<!-- Page Intro & Header Area -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bento-panel drawn-border p-panel-padding relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute -right-20 -top-20 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[300px]" style="font-variation-settings: 'FILL' 1;">database</span>
+</div>
+<div class="flex flex-col gap-2 relative z-10">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label-mono text-label-mono bg-ink-black text-paper-cream px-2 py-1 drawn-border-sm uppercase tracking-wider">DATA LAKE // RUN HISTORY // RAW OUTPUTS</span>
+<div class="flex items-center gap-2 bg-paper-cream drawn-border-sm px-2 py-1">
+<div class="w-2 h-2 rounded-full bg-interaction-lime pulse-lime"></div>
+<span class="font-label-mono text-label-mono text-ink-black">4,842 RUNS STORED</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-ink-black tracking-tighter uppercase leading-none">RUN HISTORY</h1>
+<div class="relative w-12 h-12 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-brand-green anim-float-drop absolute top-0">data_object</span>
+<span class="material-symbols-outlined text-[24px] text-ink-black absolute bottom-0">database</span>
+</div>
+</div>
+<p class="font-body-md text-body-lg text-on-primary-container max-w-2xl">Every collector run, preserved as raw data.</p>
+</div>
+<!-- Header Action -->
+<div class="relative z-10">
+<button class="bg-interaction-lime text-ink-black font-label-mono text-label-mono font-bold px-6 py-3 drawn-border hover:bg-brand-green hover:text-paper-cream transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">sync</span>
+                    SYNC WAREHOUSE
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch"><div class="lg:col-span-9 flex flex-col gap-6">
+<!-- Summary Strip -->
+<div class="bento-panel drawn-border flex flex-col sm:flex-row w-full divide-y sm:divide-y-0 sm:divide-x-2 divide-ink-black overflow-hidden bg-white">
+<div class="flex-1 p-4 flex flex-col gap-1 hover:bg-paper-cream transition-colors">
+<span class="font-label-mono text-label-mono text-on-primary-container">TOTAL RUNS</span>
+<span class="font-headline-md text-headline-md text-ink-black" id="total-runs-count">4,863</span>
+</div>
+<div class="flex-1 p-4 flex flex-col gap-1 hover:bg-paper-cream transition-colors">
+<span class="font-label-mono text-label-mono text-on-primary-container">DATA STORED</span>
+<span class="font-headline-md text-headline-md text-ink-black">18.7 <span class="text-body-md">GB</span></span>
+</div>
+<div class="flex-1 p-4 flex flex-col gap-1 hover:bg-paper-cream transition-colors">
+<span class="font-label-mono text-label-mono text-on-primary-container">SUCCESS RATE</span>
+<span class="font-headline-md text-headline-md text-brand-green flex items-center gap-2">
+                            99.2% <span class="material-symbols-outlined text-[20px]">trending_up</span>
+</span>
+</div>
+<div class="flex-1 p-4 flex flex-col gap-1 hover:bg-paper-cream transition-colors bg-surface-variant/5">
+<span class="font-label-mono text-label-mono text-on-primary-container">LAST RUN</span>
+<span class="font-headline-md text-headline-md text-ink-black flex items-center gap-2">
+                            2 min <span class="material-symbols-outlined text-[20px] spin-slow">autorenew</span>
+</span>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex flex-col md:flex-row gap-4 w-full">
+<div class="flex-grow relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-primary-container">search</span>
+<input class="w-full bg-paper-cream drawn-border pl-10 pr-4 py-3 font-label-mono text-label-mono focus:outline-none focus:ring-0 focus:border-brand-green transition-colors" placeholder="Search runs, collectors, or target URLs..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto custom-scrollbar pb-2 md:pb-0">
+<select class="bg-paper-cream drawn-border px-4 py-3 font-label-mono text-label-mono appearance-none pr-8 cursor-pointer hover:bg-surface-variant/5 focus:ring-0">
+<option>Collector: All</option>
+<option>Product Scraper A</option>
+<option>Pricing Bot</option>
+</select>
+<select class="bg-paper-cream drawn-border px-4 py-3 font-label-mono text-label-mono appearance-none pr-8 cursor-pointer hover:bg-surface-variant/5 focus:ring-0">
+<option>Status: All</option>
+<option>Success</option>
+<option>Failed</option>
+<option>Healing</option>
+</select>
+<select class="bg-paper-cream drawn-border px-4 py-3 font-label-mono text-label-mono appearance-none pr-8 cursor-pointer hover:bg-surface-variant/5 focus:ring-0">
+<option>Format: All</option>
+<option>JSON</option>
+<option>CSV</option>
+</select>
+<button class="bg-paper-cream drawn-border px-4 py-3 font-label-mono text-label-mono hover:bg-surface-variant/5 flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span> Date
+                        </button>
+</div>
+</div>
+<!-- Main Data Table Panel -->
+<div class="bento-panel drawn-border overflow-hidden bg-white flex flex-col flex-grow">
+<div class="px-6 py-4 border-b-2 border-ink-black bg-paper-cream flex justify-between items-center">
+<h2 class="font-headline-lg text-headline-md text-ink-black tracking-tight">SCRAPING RUNS</h2>
+<button class="text-brand-green hover:text-ink-black transition-colors font-label-mono text-label-mono flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">filter_list</span> VIEW OPTIONS
+                        </button>
+</div>
+<div class="overflow-x-auto custom-scrollbar flex-grow">
+<table class="w-full text-left border-collapse min-w-[900px]">
+<thead>
+<tr class="border-b-2 border-ink-black bg-surface-variant/5 font-label-mono text-label-mono text-on-primary-container">
+<th class="p-4 font-medium uppercase">Run ID</th>
+<th class="p-4 font-medium uppercase">Collector</th>
+<th class="p-4 font-medium uppercase">Target</th>
+<th class="p-4 font-medium uppercase">Started</th>
+<th class="p-4 font-medium uppercase">Duration</th>
+<th class="p-4 font-medium uppercase">Records</th>
+<th class="p-4 font-medium uppercase">Status</th>
+<th class="p-4 font-medium uppercase text-right">Raw Data</th>
+</tr>
+</thead>
+<tbody class="font-label-mono text-label-mono" id="run-table-body"><tr class="table-row-brutal group row-hover-group bg-surface-variant/5">
+<td class="p-4 text-ink-black font-bold">#R-9063</td>
+<td class="p-4">Auto_Scraper_X</td>
+<td class="p-4 truncate max-w-[150px]" title="newsite.com/data">newsite.com/data</td>
+<td class="p-4 text-on-primary-container">Just now</td>
+<td class="p-4 flex items-center gap-2"><span class="material-symbols-outlined text-[16px] spin-slow text-brand-green">sync</span> running</td>
+<td class="p-4" id="record-count-#R-9063">127</td>
+<td class="p-4">
+<div class="flex items-center gap-2 bg-white drawn-border-sm px-2 py-0.5 w-fit" id="status-badge-#R-9063">
+<div class="w-2 h-2 rounded-full bg-brand-green animate-ping"></div>
+<span class="text-ink-black font-bold text-[10px]">EXTRACTING</span>
+</div>
+</td>
+<td class="p-4 text-right">
+<span class="text-on-primary-container italic text-[11px]" id="data-status-#R-9063">Pending...</span>
+</td>
+</tr>
+<!-- Row 1: Success -->
+<tr class="table-row-brutal group row-hover-group bg-white">
+<td class="p-4 text-ink-black font-bold">#R-9042</td>
+<td class="p-4">Global_Pricing_Bot</td>
+<td class="p-4 truncate max-w-[150px]" title="ecommerce.com/tech">ecommerce.com/tech</td>
+<td class="p-4 text-on-primary-container">10:42 AM</td>
+<td class="p-4">4m 12s</td>
+<td class="p-4">2,418</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-interaction-lime status-dot"></div>
+<span class="text-deep-forest font-bold">SUCCESS</span>
+</div>
+</td>
+<td class="p-4 text-right relative">
+<div class="flex items-center justify-end gap-3">
+<span class="data-ready-label text-brand-green text-[10px] bg-brand-green/10 px-2 py-0.5 rounded-sm border border-brand-green/20">DATA READY</span>
+<button class="bg-paper-cream border border-ink-black px-2 py-1 rounded-sm hover:bg-brand-green hover:text-white transition-colors flex items-center gap-1 download-btn" onclick="triggerDownload(this)">
+<span class="btn-text">JSON</span>
+<span class="material-symbols-outlined text-[16px] btn-icon">download</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Healing -->
+<tr class="table-row-brutal group row-hover-group bg-white">
+<td class="p-4 text-ink-black font-bold">#R-9041</td>
+<td class="p-4">Retail_Catalog_A</td>
+<td class="p-4 truncate max-w-[150px]" title="retailer.co.uk/all">retailer.co.uk/all</td>
+<td class="p-4 text-on-primary-container">10:15 AM</td>
+<td class="p-4 text-brand-red">12m 45s</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="">1,005</span>
+<div class="w-4 h-4 border-2 border-brand-red rounded-full border-t-transparent anim-heal-crack"></div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#F5A623] text-[16px] spin-fast">build</span>
+<span class="text-[#F5A623] font-bold">HEALING</span>
+</div>
+</td>
+<td class="p-4 text-right relative">
+<div class="flex items-center justify-end gap-3">
+<button class="bg-paper-cream border border-ink-black px-2 py-1 rounded-sm hover:bg-brand-green hover:text-white transition-colors flex items-center gap-1 download-btn" onclick="triggerDownload(this)">
+<span class="btn-text">CSV</span>
+<span class="material-symbols-outlined text-[16px] btn-icon">download</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Running -->
+<tr class="table-row-brutal group row-hover-group bg-surface-variant/5">
+<td class="p-4 text-ink-black font-bold">#R-9040</td>
+<td class="p-4">Social_Sentiment</td>
+<td class="p-4 truncate max-w-[150px]" title="forum.xyz/tech">forum.xyz/tech</td>
+<td class="p-4 text-on-primary-container">10:05 AM</td>
+<td class="p-4 flex items-center gap-2"><span class="material-symbols-outlined text-[16px] spin-slow text-brand-green">sync</span> running</td>
+<td class="p-4 relative">
+<div class="w-full h-1 bg-ink-black/10 rounded-full overflow-hidden mt-1 relative">
+<span class="material-symbols-outlined text-[12px] text-brand-green absolute -top-2 anim-crawl-progress">bug_report</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 bg-white drawn-border-sm px-2 py-0.5 w-fit">
+<div class="w-2 h-2 rounded-full bg-brand-green animate-ping"></div>
+<span class="text-ink-black font-bold text-[10px]">EXTRACTING</span>
+</div>
+</td>
+<td class="p-4 text-right">
+<span class="text-on-primary-container italic text-[11px]">Pending...</span>
+</td>
+</tr>
+<!-- Row 4: Failed -->
+<tr class="table-row-brutal group row-hover-group bg-brand-red/5">
+<td class="p-4 text-brand-red font-bold">#R-9039</td>
+<td class="p-4">Competitor_Nav</td>
+<td class="p-4 truncate max-w-[150px]" title="secure.comp.com">secure.comp.com</td>
+<td class="p-4 text-on-primary-container">09:30 AM</td>
+<td class="p-4">0m 45s</td>
+<td class="p-4">0</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-brand-red pulse-red"></div>
+<span class="text-brand-red font-bold">FAILED</span>
+</div>
+</td>
+<td class="p-4 text-right relative">
+<button class="text-brand-red hover:underline text-[11px] font-bold flex items-center justify-end w-full gap-1">
+<span class="material-symbols-outlined text-[14px]">bug_report</span> VIEW LOGS
+                                        </button>
+</td>
+</tr>
+<!-- Row 5: Success -->
+<tr class="table-row-brutal group row-hover-group bg-white">
+<td class="p-4 text-ink-black font-bold">#R-9038</td>
+<td class="p-4">Daily_Inventory_Check</td>
+<td class="p-4 truncate max-w-[150px]" title="warehouse-api.internal">warehouse-api.internal</td>
+<td class="p-4 text-on-primary-container">08:00 AM</td>
+<td class="p-4">15m 20s</td>
+<td class="p-4">45,102</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-interaction-lime status-dot"></div>
+<span class="text-deep-forest font-bold">SUCCESS</span>
+</div>
+</td>
+<td class="p-4 text-right relative">
+<div class="flex items-center justify-end gap-3">
+<span class="data-ready-label text-brand-green text-[10px] bg-brand-green/10 px-2 py-0.5 rounded-sm border border-brand-green/20">DATA READY</span>
+<button class="bg-paper-cream border border-ink-black px-2 py-1 rounded-sm hover:bg-brand-green hover:text-white transition-colors flex items-center gap-1 download-btn" onclick="triggerDownload(this)">
+<span class="btn-text">JSON</span>
+<span class="material-symbols-outlined text-[16px] btn-icon">download</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t-2 border-ink-black bg-paper-cream flex justify-between items-center font-label-mono text-label-mono">
+<span class="text-on-primary-container">Showing 1-5 of 4,842 runs</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 drawn-border-sm bg-white hover:bg-surface-variant/10 disabled:opacity-50" disabled="">&lt; PREV</button>
+<button class="px-3 py-1 drawn-border-sm bg-ink-black text-white hover:bg-surface-variant">NEXT &gt;</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Secondary Info (Spans 3 cols on large) -->
+<div class="lg:col-span-3 flex flex-col gap-6">
+<!-- Storage Panel -->
+<div class="bento-panel drawn-border p-6 bg-white flex flex-col gap-6 relative overflow-hidden">
+<div class="flex items-center gap-3 relative z-10">
+<div class="w-10 h-10 bg-paper-cream drawn-border flex items-center justify-center">
+<span class="material-symbols-outlined text-ink-black">hard_drive</span>
+</div>
+<h3 class="font-headline-md text-[20px] text-ink-black leading-none uppercase tracking-tight">DATA LAKE STORAGE</h3>
+</div>
+<div class="flex flex-col gap-2 relative z-10">
+<div class="flex justify-between font-label-mono text-label-mono">
+<span class="font-bold text-ink-black" id="storage-current">18.7 GB</span>
+<span class="text-on-primary-container">100 GB LIMIT</span>
+</div>
+<!-- Brutalist Progress Bar -->
+<div class="w-full h-4 drawn-border-sm bg-paper-cream overflow-hidden flex relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center h-full z-0">
+<div class="w-2 h-2 bg-brand-green/50 mx-1 anim-datastore-travel" style="animation-delay: 0s"></div>
+<div class="w-2 h-2 bg-brand-green/50 mx-1 anim-datastore-travel" style="animation-delay: 1s"></div>
+<div class="w-2 h-2 bg-brand-green/50 mx-1 anim-datastore-travel" style="animation-delay: 2s"></div>
+</div>
+<div class="h-full bg-brand-green border-r-2 border-ink-black relative z-10 transition-all duration-1000 ease-out" id="storage-bar" style="width: 0%;"></div>
+</div>
+</div>
+<div class="flex flex-col gap-3 pt-4 border-t-2 border-ink-black border-dashed relative z-10">
+<div class="flex justify-between items-center font-label-mono text-label-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-brand-green">data_object</span>
+<span class="text-ink-black">JSON BLOCKS</span>
+</div>
+<span class="font-bold bg-paper-cream px-2 py-0.5 drawn-border-sm">11.2 GB</span>
+</div>
+<div class="flex justify-between items-center font-label-mono text-label-mono">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-brand-green">table_view</span>
+<span class="text-ink-black">CSV EXPORTS</span>
+</div>
+<span class="font-bold bg-paper-cream px-2 py-0.5 drawn-border-sm">7.5 GB</span>
+</div>
+</div>
+<button class="w-full mt-2 bg-paper-cream drawn-border py-2 font-label-mono text-label-mono hover:bg-ink-black hover:text-white transition-colors uppercase relative z-10">
+                        Manage Retention
+                    </button>
+</div>
+<!-- Editorial Diagram Panel -->
+<div class="bento-panel-green drawn-border p-6 relative overflow-hidden group min-h-[300px] flex flex-col flex-grow">
+<h3 class="font-headline-md text-[18px] mb-2 uppercase tracking-tight relative z-10">Data Pipeline Flow</h3>
+<div class="w-full flex justify-center -mt-8 flex-grow">
+<svg class="w-full h-full" height="100%" preserveaspectratio="xMidYMid meet" viewbox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+<!-- Define Styles -->
+<style>
+    @keyframes walk {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes crawlLoop {
+      0% { transform: translate(180px, 40px); opacity: 0; }
+      5% { opacity: 1; }
+      20% { transform: translate(180px, 150px); } /* Reaches Scraped Data */
+      40% { transform: translate(180px, 150px); } /* Wait to collect */
+      60% { transform: translate(180px, 450px); } /* Reaches Data Lake */
+      80% { transform: translate(180px, 450px); } /* Drops off */
+      95% { opacity: 1; }
+      100% { transform: translate(180px, 40px); opacity: 0; }
+    }
+    @keyframes dataBurst {
+      0% { transform: scale(0); opacity: 0; }
+      40% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      60% { transform: scale(1); opacity: 1; }
+      80% { transform: translate(0, 300px); opacity: 1; }
+      90% { transform: translate(0, 310px); opacity: 0; }
+      100% { transform: translate(0, 310px); opacity: 0; }
+    }
+    @keyframes nodePulse {
+      0%, 100% { stroke-width: 2; }
+      50% { stroke-width: 4; stroke: #86efac; }
+    }
+    
+    .crawler { animation: crawlLoop 8s infinite cubic-bezier(0.45, 0, 0.55, 1); }
+    .crawler-body { animation: walk 0.5s infinite ease-in-out; }
+    
+    .node-active-1 { animation: nodePulse 8s infinite; animation-delay: 0s; }
+    .node-active-2 { animation: nodePulse 8s infinite; animation-delay: 1.6s; }
+    .node-active-3 { animation: nodePulse 8s infinite; animation-delay: 4.8s; }
+    
+    .data-packet { animation: dataBurst 8s infinite; }
+  </style>
+<!-- Background Paths -->
+<path d="M200 80 L200 160 M200 240 L200 460" fill="none" stroke="#131313" stroke-dasharray="4 4" stroke-width="2"></path>
+<!-- Node 1: Collector -->
+<g transform="translate(140, 40)">
+<rect class="node-active-1" fill="#f9f6f1" height="40" rx="4" stroke="#131313" stroke-width="2" width="120"></rect>
+<text font-family="Archivo Narrow" font-size="12" font-weight="bold" text-anchor="middle" x="60" y="25">COLLECTOR</text>
+</g>
+<!-- Node 2: Scraped Data -->
+<g transform="translate(140, 180)">
+<rect class="node-active-2" fill="#f9f6f1" height="60" rx="4" stroke="#131313" stroke-width="2" width="120"></rect>
+<text font-family="Archivo Narrow" font-size="12" font-weight="bold" text-anchor="middle" x="60" y="25">SCRAPED DATA</text>
+<!-- Bursting Data Objects -->
+<g class="data-packet" style="animation-delay: 0.2s">
+<rect fill="#0D3D2E" height="15" rx="2" width="40" x="10" y="35"></rect>
+<text fill="#f9f6f1" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="30" y="46">$29.99</text>
+</g>
+<g class="data-packet" style="animation-delay: 0.4s">
+<rect fill="#B11B24" height="15" rx="2" width="40" x="70" y="35"></rect>
+<text fill="#f9f6f1" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="90" y="46">IN STOCK</text>
+</g>
+</g>
+<!-- Node 3: BentoOS Data Lake -->
+<g transform="translate(140, 480)">
+<rect class="node-active-3" fill="#f9f6f1" height="60" rx="4" stroke="#131313" stroke-width="2" width="120"></rect>
+<text font-family="Archivo Narrow" font-size="12" font-weight="bold" text-anchor="middle" x="60" y="35">BENTOOS DATA LAKE</text>
+<circle cx="60" cy="15" fill="#bef264" r="4"></circle>
+</g>
+<!-- Crawler Character -->
+<g class="crawler">
+<g class="crawler-body">
+<!-- Simple Robot/Spider Design -->
+<rect fill="#131313" height="20" rx="6" width="30" x="0" y="0"></rect>
+<circle cx="8" cy="8" fill="#bef264" r="3"></circle>
+<circle cx="22" cy="8" fill="#bef264" r="3"></circle>
+<path d="M5 20 L0 25 M15 20 L15 28 M25 20 L30 25" stroke="#131313" stroke-width="2"></path>
+</g>
+</g>
+</svg>
+</div>
+<!-- Decorative sketchy bg element -->
+<svg class="absolute -right-4 -bottom-4 w-32 h-32 opacity-20 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 100 100">
+<path d="M10,90 Q50,10 90,90"></path>
+<path d="M20,90 Q50,30 80,90"></path>
+<path d="M30,90 Q50,50 70,90"></path>
+</svg>
+</div>
+</div></div>
+</main>
+<script>
+        // Initial load animation for storage bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('storage-bar');
+            setTimeout(() => {
+                bar.style.width = '18.7%';
+            }, 500);
+        });
+
+        // Micro-interaction for download button
+        function triggerDownload(btn) {
+            const originalText = btn.querySelector('.btn-text').innerText;
+            const originalIcon = btn.querySelector('.btn-icon').innerText;
+            const btnText = btn.querySelector('.btn-text');
+            const btnIcon = btn.querySelector('.btn-icon');
+            
+            if (btn.disabled) return;
+            btn.disabled = true;
+            btn.classList.add('bg-surface-variant/10');
+            
+            // Total time: 1.5s
+            // Step 1: PREPARING
+            btnText.innerText = 'PREPARING...';
+            btnIcon.innerText = 'hourglass_empty';
+            
+            setTimeout(() => {
+                // Step 2: PACKING
+                btnText.innerText = 'PACKING...';
+                btnIcon.innerText = 'inventory_2';
+                
+                setTimeout(() => {
+                    // Step 3: READY
+                    btnText.innerText = 'READY';
+                    btnIcon.innerText = 'check';
+                    btn.classList.remove('bg-surface-variant/10');
+                    btn.classList.add('bg-interaction-lime', 'text-ink-black', 'border-interaction-lime');
+                    
+                    // Reset
+                    setTimeout(() => {
+                        btnText.innerText = originalText;
+                        btnIcon.innerText = originalIcon;
+                        btn.disabled = false;
+                        btn.classList.remove('bg-interaction-lime', 'text-ink-black', 'border-interaction-lime');
+                    }, 1000);
+                }, 750);
+            }, 750);
+        }
+
+        // Run Simulation Logic
+        let currentRunId = 9043;
+        let totalRuns = 4842;
+        
+        function injectNewRun() {
+            const tbody = document.getElementById('run-table-body');
+            const runId = `#R-${currentRunId++}`;
+            totalRuns++;
+            
+            // Update counts
+            document.getElementById('total-runs-count').innerText = totalRuns.toLocaleString();
+            
+            // Create Running Row
+            const tr = document.createElement('tr');
+            tr.className = 'table-row-brutal group row-hover-group bg-surface-variant/5';
+            tr.innerHTML = `
+                <td class="p-4 text-ink-black font-bold">${runId}</td>
+                <td class="p-4">Auto_Scraper_X</td>
+                <td class="p-4 truncate max-w-[150px]" title="newsite.com/data">newsite.com/data</td>
+                <td class="p-4 text-on-primary-container">Just now</td>
+                <td class="p-4 flex items-center gap-2"><span class="material-symbols-outlined text-[16px] spin-slow text-brand-green">sync</span> running</td>
+                <td class="p-4" id="record-count-${runId}">0</td>
+                <td class="p-4">
+                    <div class="flex items-center gap-2 bg-white drawn-border-sm px-2 py-0.5 w-fit" id="status-badge-${runId}">
+                        <div class="w-2 h-2 rounded-full bg-brand-green animate-ping"></div>
+                        <span class="text-ink-black font-bold text-[10px]">EXTRACTING</span>
+                    </div>
+                </td>
+                <td class="p-4 text-right">
+                    <span class="text-on-primary-container italic text-[11px]" id="data-status-${runId}">Pending...</span>
+                </td>
+            `;
+            
+            tbody.insertBefore(tr, tbody.firstChild);
+            
+            // Simulate extracting count
+            let records = 0;
+            const countInterval = setInterval(() => {
+                records += Math.floor(Math.random() * 50) + 10;
+                const countCell = document.getElementById(`record-count-${runId}`);
+                if (countCell) countCell.innerText = records.toLocaleString();
+            }, 500);
+            
+            // Settle to success after ~5 seconds for demo purposes
+            setTimeout(() => {
+                clearInterval(countInterval);
+                tr.className = 'table-row-brutal group row-hover-group bg-white';
+                
+                // Update duration cell (5th td)
+                tr.children[4].innerHTML = '0m 05s';
+                
+                // Update status badge
+                const statusBadge = document.getElementById(`status-badge-${runId}`);
+                if(statusBadge) {
+                    statusBadge.outerHTML = `
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-interaction-lime status-dot"></div>
+                            <span class="text-deep-forest font-bold">SUCCESS</span>
+                        </div>
+                    `;
+                }
+                
+                // Update raw data column
+                const dataStatus = document.getElementById(`data-status-${runId}`);
+                if(dataStatus) {
+                    dataStatus.parentElement.innerHTML = `
+                        <div class="flex items-center justify-end gap-3">
+                            <span class="data-ready-label text-brand-green text-[10px] bg-brand-green/10 px-2 py-0.5 rounded-sm border border-brand-green/20">DATA READY</span>
+                            <button class="bg-paper-cream border border-ink-black px-2 py-1 rounded-sm hover:bg-brand-green hover:text-white transition-colors flex items-center gap-1 download-btn" onclick="triggerDownload(this)">
+                                <span class="btn-text">JSON</span>
+                                <span class="material-symbols-outlined text-[16px] btn-icon">download</span>
+                            </button>
+                        </div>
+                    `;
+                }
+            }, 5000);
+            
+            // Keep table length somewhat manageable for the demo
+            if (tbody.children.length > 7) {
+                tbody.removeChild(tbody.lastChild);
+            }
+        }
+        
+        // Start simulation
+        setInterval(injectNewRun, 18000); // 18 seconds
+        
+        // Storage Panel Animation
+        let storagePercent = 18.7;
+        setInterval(() => {
+            storagePercent = Math.min(100, storagePercent + 1);
+            document.getElementById('storage-current').innerText = storagePercent.toFixed(1) + ' GB';
+            document.getElementById('storage-bar').style.width = storagePercent + '%';
+        }, 10000);
+
+    </script>
+<div aria-hidden="true" data-snapdom-sandbox="true" id="snapdom-sandbox" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>
